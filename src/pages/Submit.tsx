@@ -41,7 +41,7 @@ const Submit = () => {
       
       try {
         const loader = new Loader({
-          apiKey: 'AIzaSyC8P03hSSsh6Rree8RyOebKwm32sYh4rYs',
+          apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
           version: 'weekly',
           libraries: ['places'],
           region: 'PL',
