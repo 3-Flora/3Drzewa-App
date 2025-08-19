@@ -1,7 +1,7 @@
 # 3Drzewa - Dokumentacja API
 
 ## Przegląd
-Aplikacja 3Drzewa to społecznościowy rejestr polskich pomników przyrody. Użytkownicy mogą zgłaszać drzewa, weryfikować zgłoszenia, generować wnioski do gmin oraz przeglądać encyklopedię gatunków.
+Aplikacja 3Drzewa to społecznościowy rejestr polskich pomników przyrody. Użytkownicy mogą zgłaszać drzewa, weryfikować zgłoszenia, generować wnioski do gmin oraz przeglądanie encyklopedii gatunków.
 
 ## Technologie
 - **Frontend**: React + TypeScript + Vite
@@ -148,7 +148,7 @@ interface TreeLegend {
 }
 ```
 
-### AppStats (nowy model dla raportów)
+### AppStats (dla raportów)
 ```typescript
 interface AppStats {
   totalTrees: number;
@@ -161,6 +161,95 @@ interface AppStats {
   topRegions: Array<{ name: string; count: number }>;
   topSpecies: Array<{ name: string; count: number }>;
   monthlyGrowth: Array<{ month: string; trees: number; users: number }>;
+}
+```
+
+### Municipality (dla formularzy)
+```typescript
+interface Municipality {
+  id: string;
+  name: string;
+  voivodeship: string;
+}
+```
+
+### ReportType (dla formularzy)
+```typescript
+interface ReportType {
+  id: string;
+  name: string;
+  description: string;
+  template: string;
+}
+```
+
+### MapConfig (dla mapy)
+```typescript
+interface MapConfig {
+  defaultCenter: { lat: number; lng: number };
+  defaultZoom: number;
+  region: string;
+  language: string;
+}
+```
+
+### SettingsMenu (dla ustawień)
+```typescript
+interface SettingsMenu {
+  mainMenuItems: Array<{
+    title: string;
+    description: string;
+    icon: string;
+    path: string;
+    color: string;
+    bgColor: string;
+    emoji: string;
+  }>;
+  settingsItems: Array<{
+    id: string;
+    title: string;
+    description: string;
+    icon: string;
+    emoji: string;
+  }>;
+}
+```
+
+### HomeStats (dla strony głównej)
+```typescript
+interface HomeStats {
+  icon: string;
+  value: string;
+  label: string;
+  color: string;
+}
+```
+
+### RegisterData (dla rejestracji)
+```typescript
+interface RegisterData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  password: string;
+  confirmPassword: string;
+}
+```
+
+### LoginData (dla logowania)
+```typescript
+interface LoginData {
+  email: string;
+  password: string;
+}
+```
+
+### AuthResponse (dla odpowiedzi autoryzacji)
+```typescript
+interface AuthResponse {
+  user: User;
+  token: string;
 }
 ```
 
@@ -501,6 +590,44 @@ Pobierz profil użytkownika
 
 ### Wnioski do gmin
 
+#### GET /api/municipalities
+Pobierz listę dostępnych gmin
+```json
+// Response 200
+[
+  {
+    "id": "1",
+    "name": "Gmina Kraków",
+    "voivodeship": "Małopolskie"
+  },
+  {
+    "id": "2", 
+    "name": "Gmina Warszawa",
+    "voivodeship": "Mazowieckie"
+  }
+]
+```
+
+#### GET /api/reports/types
+Pobierz dostępne typy raportów
+```json
+// Response 200
+[
+  {
+    "id": "1",
+    "name": "Wniosek o uznanie za pomnik przyrody",
+    "description": "Standardowy wniosek zgodny z ustawą o ochronie przyrody",
+    "template": "standard_monument_request"
+  },
+  {
+    "id": "2",
+    "name": "Wniosek o objęcie ochroną prawną", 
+    "description": "Wniosek o objęcie drzewa szczególną ochroną prawną",
+    "template": "legal_protection_request"
+  }
+]
+```
+
 #### GET /api/forms
 Pobierz wnioski aktualnego użytkownika
 ```json
@@ -632,7 +759,54 @@ Polub legendę
 }
 ```
 
-### Raporty i statystyki (NOWY)
+### Konfiguracja mapy
+
+#### GET /api/map/config
+Pobierz konfigurację mapy
+```json
+// Response 200
+{
+  "defaultCenter": {
+    "lat": 50.0412,
+    "lng": 21.9991
+  },
+  "defaultZoom": 13,
+  "region": "PL",
+  "language": "pl"
+}
+```
+
+### Ustawienia
+
+#### GET /api/settings/menu
+Pobierz menu ustawień
+```json
+// Response 200
+{
+  "mainMenuItems": [
+    {
+      "title": "Moje wnioski",
+      "description": "Przeglądaj wygenerowane wnioski do gmin",
+      "icon": "FileText",
+      "path": "/forms",
+      "color": "text-emerald-600",
+      "bgColor": "bg-emerald-50",
+      "emoji": "📄"
+    }
+  ],
+  "settingsItems": [
+    {
+      "id": "notifications",
+      "title": "Powiadomienia",
+      "description": "Zarządzaj powiadomieniami push i email",
+      "icon": "Bell",
+      "emoji": "🔔"
+    }
+  ]
+}
+```
+
+### Raporty i statystyki
 
 #### GET /api/reports/stats
 Pobierz statystyki aplikacji

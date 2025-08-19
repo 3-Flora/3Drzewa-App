@@ -1,5 +1,16 @@
-import { TreeSubmission, Comment, TreeSpecies, User, MunicipalForm } from '../types';
-import { TreeLegend } from '../types';
+import { 
+  TreeSubmission, 
+  Comment, 
+  TreeSpecies, 
+  User, 
+  MunicipalForm,
+  TreeLegend,
+  AppStats,
+  Municipality,
+  ReportType,
+  MapConfig,
+  SettingsMenu
+} from '../types';
 import { RegisterData } from '../hooks/useAuth';
 import { 
   mockTreeSubmissions, 
@@ -222,4 +233,44 @@ export async function fetchGlobalLegends(): Promise<TreeLegend[]> {
   await delay(400);
   // TODO: podłączyć do backendu .NET API GET /api/legends
   return Promise.resolve(mockTreeLegends);
+}
+
+// Reports and Statistics API
+export async function fetchAppStats(): Promise<AppStats> {
+  await delay(500);
+  // TODO: podłączyć do backendu .NET API GET /api/reports/stats
+  const { mockAppStats } = await import('../data/mockData');
+  return Promise.resolve(mockAppStats);
+}
+
+// Municipalities API
+export async function fetchMunicipalities(): Promise<Municipality[]> {
+  await delay(300);
+  // TODO: podłączyć do backendu .NET API GET /api/municipalities
+  const { mockMunicipalities } = await import('../data/mockData');
+  return Promise.resolve(mockMunicipalities);
+}
+
+// Report Types API
+export async function fetchReportTypes(): Promise<ReportType[]> {
+  await delay(300);
+  // TODO: podłączyć do backendu .NET API GET /api/reports/types
+  const { mockReports } = await import('../data/mockData');
+  return Promise.resolve(mockReports);
+}
+
+// Map Configuration API
+export async function fetchMapConfig(): Promise<MapConfig> {
+  await delay(200);
+  // TODO: podłączyć do backendu .NET API GET /api/map/config
+  const { mockMapConfig } = await import('../data/mockData');
+  return Promise.resolve(mockMapConfig);
+}
+
+// Settings Menu API
+export async function fetchSettingsMenu(): Promise<SettingsMenu> {
+  await delay(200);
+  // TODO: podłączyć do backendu .NET API GET /api/settings/menu
+  const { mockSettingsMenu } = await import('../data/mockData');
+  return Promise.resolve(mockSettingsMenu);
 }
