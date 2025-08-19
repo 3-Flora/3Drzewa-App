@@ -401,7 +401,7 @@ export const mockTreeLegends: TreeLegend[] = [
     period: 'Około 200 lat',
     story: 'Ta majestatyczna lipa rośnie w parku miejskim w Kutnie i według lokalnej legendy, Napoleon Bonaparte odpoczywał w jej cieniu podczas kampanii 1807 roku. Drzewo ma obwód pnia około 4,5 metra i jest jednym z najstarszych drzew w mieście. Mieszkańcy Kutna wierzą, że lipa przynosi szczęście zakochanym - młode pary często przychodzą tutaj, aby złożyć przysięgę miłości. Każdego lata, podczas kwitnienia, drzewo wypełnia park cudownym aromatem, przyciągając pszczoły z całej okolicy.',
     author: 'Piotr Wiśniewski',
-    image: 'https://images.pexels.com/photos/1375849/pexels-photo-1375849.jpeg?w=800&h=600&fit=crop',
+    image: 'https://images.pexels.com/photos/1172675/pexels-photo-1172675.jpeg?w=800&h=600&fit=crop',
     likes: 156,
     treeId: '2'
   },
@@ -414,7 +414,7 @@ export const mockTreeLegends: TreeLegend[] = [
     period: 'Około 400 lat',
     story: 'W sercu Puszczy Bukowej rośnie potężny buk, który miejscowi nazywają "Królewskim". Legenda głosi, że pod tym drzewem król Bolesław Chrobry modlił się przed bitwą pod Cedynią w 972 roku. Drzewo ma obwód pnia ponad 6 metrów i wysokość 35 metrów. Jesienią, gdy liście przybierają złociste barwy, buk wygląda jak prawdziwy król lasu. Leśnicy opowiadają, że w pełnię księżyca można usłyszeć szept dawnych władców, którzy błogosławią ziemię polską. Drzewo jest miejscem pielgrzymek dla miłośników przyrody z całego kraju.',
     author: 'Anna Zielińska',
-    image: 'https://images.pexels.com/photos/1172341/pexels-photo-1172341.jpeg?w=800&h=600&fit=crop',
+    image: 'https://images.pexels.com/photos/1172675/pexels-photo-1172675.jpeg?w=800&h=600&fit=crop',
     likes: 189,
     treeId: '3'
   },
