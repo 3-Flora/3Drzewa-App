@@ -43,7 +43,7 @@ const CommentForm: React.FC<CommentFormProps> = ({
             <button
               onClick={onSubmit}
               disabled={!newComment.trim()}
-              className="px-4 py-2 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 btn-green text-white text-sm rounded-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-bold"
             >
               Dodaj
             </button>

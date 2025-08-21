@@ -25,7 +25,7 @@ const EmptyState: React.FC<EmptyStateProps> = ({ hasTrees }) => {
         </p>
         <Link
           to="/submit"
-          className="inline-flex items-center space-x-2 glass-accent glass-accent-hover text-white px-8 py-4 rounded-xl transition-all duration-300 font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-2"
+          className="inline-flex items-center space-x-2 btn-green text-white px-8 py-4 rounded-xl transition-all duration-300 font-bold shadow-xl hover:shadow-2xl transform hover:-translate-y-2"
         >
           <TreePine className="w-5 h-5" />
           <span>Zgłoś pierwsze drzewo</span>

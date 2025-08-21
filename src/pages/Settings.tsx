@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   FileText, 
@@ -41,10 +41,27 @@ const Settings = () => {
     dataSharing: false
   });
   const [language, setLanguage] = useState('pl');
+  
+  // Ref for the settings content container
+  const settingsContentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     loadSettingsMenu();
   }, []);
+
+  // Effect to scroll to content when section changes
+  useEffect(() => {
+    if (activeSection && settingsContentRef.current) {
+      // Add a small delay to ensure the content is rendered
+      setTimeout(() => {
+        settingsContentRef.current?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+          inline: 'nearest'
+        });
+      }, 100);
+    }
+  }, [activeSection]);
 
   const loadSettingsMenu = async () => {
     try {
@@ -83,6 +100,10 @@ const Settings = () => {
 
   const handleLanguageChange = (newLanguage: string) => {
     setLanguage(newLanguage);
+  };
+
+  const handleSectionClick = (sectionId: string) => {
+    setActiveSection(sectionId);
   };
 
   if (loading || !menuData) {
@@ -130,21 +151,23 @@ const Settings = () => {
         
         <SettingsMenuSection 
           items={settingsItems}
-          onItemClick={(sectionId) => setActiveSection(sectionId)}
+          onItemClick={handleSectionClick}
         />
         
         <AnimatePresence mode="wait">
           {activeSection && (
-            <SettingsContent
-              activeSection={activeSection}
-              notifications={notifications}
-              privacy={privacy}
-              language={language}
-              onNotificationChange={handleNotificationChange}
-              onPrivacyChange={handlePrivacyChange}
-              onLanguageChange={handleLanguageChange}
-              settingsItems={settingsItems}
-            />
+            <div ref={settingsContentRef}>
+              <SettingsContent
+                activeSection={activeSection}
+                notifications={notifications}
+                privacy={privacy}
+                language={language}
+                onNotificationChange={handleNotificationChange}
+                onPrivacyChange={handlePrivacyChange}
+                onLanguageChange={handleLanguageChange}
+                settingsItems={settingsItems}
+              />
+            </div>
           )}
         </AnimatePresence>
       </motion.div>

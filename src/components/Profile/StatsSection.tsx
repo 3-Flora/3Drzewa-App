@@ -1,8 +1,8 @@
 import React from 'react';
-import { User } from '../../types';
+import { User as UserType } from '../../types';
 
 interface StatsSectionProps {
-  user: User;
+  user: UserType;
   monumentCount: number;
   approvedCount: number;
   pendingCount: number;

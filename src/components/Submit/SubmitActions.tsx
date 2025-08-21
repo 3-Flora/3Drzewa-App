@@ -22,7 +22,7 @@ const SubmitActions: React.FC<SubmitActionsProps> = ({
       <button
         type="submit"
         disabled={loading || generatingForm}
-        className="flex-1 flex items-center justify-center space-x-2 glass-accent glass-accent-hover text-white py-3 px-6 rounded-lg transition-all duration-300 font-medium disabled:opacity-50 shadow-lg"
+        className="flex-1 flex items-center justify-center space-x-2 btn-green text-white py-3 px-6 rounded-lg transition-all duration-300 font-medium disabled:opacity-50 shadow-lg"
       >
         {loading ? (
           <LoadingSpinner size="sm" />

@@ -20,7 +20,7 @@ const TreeCardActions: React.FC<TreeCardActionsProps> = ({ tree }) => {
       
       <Link
         to={`/forms/create/${tree.id}`}
-        className="flex items-center space-x-2 px-6 py-3 glass-accent glass-accent-hover text-white rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+        className="flex items-center space-x-2 px-6 py-3 btn-green text-white rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
       >
         <FileText className="w-4 h-4" />
         <span>Stwórz wniosek</span>

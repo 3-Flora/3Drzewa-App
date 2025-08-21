@@ -24,7 +24,7 @@ const TreeInfo: React.FC<TreeInfoProps> = ({ tree }) => {
           {tree.status === 'approved' && (
             <button
               onClick={() => navigate('/forms/create')}
-              className="flex items-center space-x-2 glass-accent glass-accent-hover text-white px-6 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              className="flex items-center space-x-2 btn-green text-white px-6 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               <FileText className="w-5 h-5" />
               <span>Stwórz wniosek</span>

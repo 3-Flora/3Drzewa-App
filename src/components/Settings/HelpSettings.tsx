@@ -44,7 +44,7 @@ const HelpSettings: React.FC = () => {
           <button className="w-full glass-primary glass-primary-hover text-green-700 px-6 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
             💬 Chat na żywo
           </button>
-          <button className="w-full glass-accent glass-accent-hover text-emerald-700 px-6 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+          <button className="w-full btn-green text-white px-6 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
             📞 Zadzwoń do nas
           </button>
         </div>

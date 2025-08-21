@@ -1,11 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useRef, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Loader } from '@googlemaps/js-api-loader';
 import { Plus, MapPin, TreePine, Award, CheckCircle, Clock } from 'lucide-react';
-import { fetchTrees } from '../utils/api';
 import { TreeSubmission } from '../types';
+import { fetchTrees } from '../utils/api';
+import { getTreeMarkerIcon } from '../components/Map/MapUtils';
+import { createAddTreeInfoWindowWithReact } from '../components/Map/AddTreeInfoWindow';
+import { createTreeDetailsInfoWindowWithReact } from '../components/Map/TreeDetailsInfoWindow';
 
 const Map = () => {
+  const navigate = useNavigate();
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [trees, setTrees] = useState<TreeSubmission[]>([]);
@@ -17,35 +21,18 @@ const Map = () => {
   const treeDetailsInfoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  // Add global functions for InfoWindow buttons BEFORE useEffect
-  React.useEffect(() => {
-    (window as any).addTreeAtLocation = (lat: number, lng: number) => {
-      console.log('Redirecting to submit with:', lat, lng);
-      if (addTreeInfoWindowRef.current) {
-        addTreeInfoWindowRef.current.close();
-      }
-      if (selectedMarkerRef.current) {
-        selectedMarkerRef.current.setMap(null);
-        selectedMarkerRef.current = null;
-      }
-      setSelectedLocation(null);
-      // Use React Router navigation instead of window.location
-      const submitUrl = `/submit?lat=${lat}&lng=${lng}`;
-      window.history.pushState({}, '', submitUrl);
-      window.dispatchEvent(new PopStateEvent('popstate'));
+  // Navigation function for tree details
+  const handleViewTreeDetails = (treeId: string) => {
+    navigate(`/tree/${treeId}`);
+  };
+
+  // Add global functions for InfoWindow buttons
+  useEffect(() => {
+    // Global function for tree details navigation
+    (window as any).viewTreeDetails = (treeId: string) => {
+      navigate(`/tree/${treeId}`);
     };
-    
-    (window as any).cancelAddTree = () => {
-      if (addTreeInfoWindowRef.current) {
-        addTreeInfoWindowRef.current.close();
-      }
-      if (selectedMarkerRef.current) {
-        selectedMarkerRef.current.setMap(null);
-        selectedMarkerRef.current = null;
-      }
-      setSelectedLocation(null);
-    };
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     loadTrees();
@@ -139,42 +126,28 @@ const Map = () => {
             selectedMarkerRef.current = selectedMarker;
             
             // Create and show InfoWindow for adding tree
-            const addTreeContent = `
-              <div style="padding: 12px 16px; text-align: center; min-width: 220px; border-radius: 16px; background: linear-gradient(135deg, rgba(240, 253, 244, 0.95) 0%, rgba(220, 252, 231, 0.95) 100%); backdrop-filter: blur(15px); border: 2px solid rgba(34, 197, 94, 0.2);">
-                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; box-shadow: 0 4px 16px rgba(34, 197, 94, 0.3); border: 3px solid rgba(34, 197, 94, 0.4);">
-                  <svg width="24" height="24" fill="#16a34a" viewBox="0 0 24 24">
-                    <path d="M12 2C8 2 4 4 2 8C0 6 -4 6 -6 8C-8 10 -8 14 -6 16C-8 18 -8 22 -4 24C-6 26 -4 30 0 30C-2 34 2 38 6 36C4 40 8 44 12 42C16 44 20 40 18 36C22 38 26 34 24 30C28 30 30 26 28 24C32 22 32 18 30 16C32 14 32 10 30 8C28 6 24 6 22 8C20 4 16 2 12 2Z" transform="translate(12,12) scale(0.4) translate(-12,-12)"/>
-                  </svg>
-                </div>
-                <h3 style="font-size: 20px; font-weight: 800; color: #15803d; margin: 6px 0 8px 0; text-shadow: 0 1px 2px rgba(0,0,0,0.1);">
-                  Dodaj nowe drzewo
-                </h3>
-                <p style="font-size: 15px; color: #166534; margin-bottom: 10px; font-weight: 600;">
-                  Czy chcesz dodać drzewo w tej lokalizacji?
-                </p>
-                <p style="font-size: 13px; color: #059669; margin-bottom: 12px; font-weight: 500; background: rgba(255,255,255,0.6); padding: 4px 8px; border-radius: 8px;">
-                  ${lat.toFixed(6)}, ${lng.toFixed(6)}
-                </p>
-                <div style="display: flex; gap: 10px;">
-                  <button onclick="window.cancelAddTree()" style="flex: 1; padding: 10px 14px; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(15px); border: 2px solid rgba(229, 231, 235, 0.8); color: #374151; border-radius: 10px; font-size: 13px; cursor: pointer; font-weight: 700; transition: all 0.3s; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    Anuluj
-                  </button>
-                  <button onclick="window.addTreeAtLocation(${lat}, ${lng})" style="flex: 1; padding: 10px 14px; background: linear-gradient(135deg, rgba(5, 150, 105, 0.9) 0%, rgba(5, 150, 105, 0.7) 100%); backdrop-filter: blur(15px); border: 2px solid rgba(5, 150, 105, 0.6); color: white; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4); transition: all 0.3s;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 16px rgba(5, 150, 105, 0.5)'" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 12px rgba(5, 150, 105, 0.4)'">
-                    Dodaj drzewo
-                  </button>
-                </div>
-              </div>
-            `;
-            
             if (addTreeInfoWindowRef.current) {
               addTreeInfoWindowRef.current.close();
             }
             
-            addTreeInfoWindowRef.current = new google.maps.InfoWindow({
-              content: addTreeContent,
-              position: { lat: lat + 0.0003, lng },
-              disableAutoPan: false
-            });
+            addTreeInfoWindowRef.current = createAddTreeInfoWindowWithReact(
+              mapInstance,
+              { lat, lng },
+              (lat: number, lng: number) => {
+                if (addTreeInfoWindowRef.current) {
+                  addTreeInfoWindowRef.current.close();
+                }
+                if (selectedMarkerRef.current) {
+                  selectedMarkerRef.current.setMap(null);
+                  selectedMarkerRef.current = null;
+                }
+                setSelectedLocation(null);
+                // Use React Router navigation instead of window.location
+                const submitUrl = `/submit?lat=${lat}&lng=${lng}`;
+                window.history.pushState({}, '', submitUrl);
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }
+            );
             
             addTreeInfoWindowRef.current.open(mapInstance);
             
@@ -287,9 +260,9 @@ const Map = () => {
               <div style="font-size: 12px; color: #000000; font-weight: 700;">
                 Pierśnica: ${tree.circumference} cm
               </div>
-              <a href="/tree/${tree.id}" style="padding: 6px 12px; background: linear-gradient(135deg, rgba(5, 150, 105, 0.9) 0%, rgba(5, 150, 105, 0.7) 100%); backdrop-filter: blur(15px); border: 2px solid rgba(5, 150, 105, 0.6); color: white; border-radius: 10px; font-size: 12px; font-weight: 700; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);">
+              <button onclick="window.viewTreeDetails('${tree.id}')" style="padding: 6px 12px; background: linear-gradient(135deg, rgba(5, 150, 105, 0.9) 0%, rgba(5, 150, 105, 0.7) 100%); border: none; color: white; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);">
                 Zobacz szczegóły
-              </a>
+              </button>
             </div>
           </div>
         `;
@@ -331,53 +304,6 @@ const Map = () => {
       default: return 'background: #dcfce7; color: #166534;';
     }
   };
-  const getTreeMarkerIcon = (status: string) => {
-    switch (status) {
-      case 'monument': 
-        return 'data:image/svg+xml;base64,' + btoa(`
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="40" r="6" fill="#0F172A" opacity="0.3"/>
-            <path d="M24 4C20 4 16 6 14 10C12 8 8 8 6 10C4 12 4 16 6 18C4 20 4 24 8 26C6 28 8 32 12 32C10 36 14 40 18 38C16 42 20 46 24 44C28 46 32 42 30 38C34 40 38 36 36 32C40 32 42 28 40 26C44 24 44 20 42 18C44 16 44 12 42 10C40 8 36 8 34 10C32 6 28 4 24 4Z" fill="#15803D"/>
-            <path d="M24 12L26 20L34 20L28 26L30 34L24 30L18 34L20 26L14 20L22 20L24 12Z" fill="#FCD34D"/>
-            <circle cx="24" cy="24" r="2" fill="#FCD34D"/>
-          </svg>
-        `);
-      case 'approved': 
-        return 'data:image/svg+xml;base64,' + btoa(`
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="40" r="6" fill="#0F172A" opacity="0.3"/>
-            <path d="M24 4C20 4 16 6 14 10C12 8 8 8 6 10C4 12 4 16 6 18C4 20 4 24 8 26C6 28 8 32 12 32C10 36 14 40 18 38C16 42 20 46 24 44C28 46 32 42 30 38C34 40 38 36 36 32C40 32 42 28 40 26C44 24 44 20 42 18C44 16 44 12 42 10C40 8 36 8 34 10C32 6 28 4 24 4Z" fill="#22C55E"/>
-            <path d="M18 24L22 28L30 20" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="24" cy="24" r="2" fill="#FFFFFF"/>
-          </svg>
-        `);
-      case 'pending': 
-        return 'data:image/svg+xml;base64,' + btoa(`
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="40" r="6" fill="#0F172A" opacity="0.3"/>
-            <path d="M24 4C20 4 16 6 14 10C12 8 8 8 6 10C4 12 4 16 6 18C4 20 4 24 8 26C6 28 8 32 12 32C10 36 14 40 18 38C16 42 20 46 24 44C28 46 32 42 30 38C34 40 38 36 36 32C40 32 42 28 40 26C44 24 44 20 42 18C44 16 44 12 42 10C40 8 36 8 34 10C32 6 28 4 24 4Z" fill="#84CC16"/>
-            <circle cx="24" cy="24" r="8" stroke="#FFFFFF" stroke-width="2" fill="none"/>
-            <path d="M24 18V24L28 28" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        `);
-      case 'rejected':
-        return 'data:image/svg+xml;base64,' + btoa(`
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="40" r="6" fill="#0F172A" opacity="0.3"/>
-            <path d="M24 4C20 4 16 6 14 10C12 8 8 8 6 10C4 12 4 16 6 18C4 20 4 24 8 26C6 28 8 32 12 32C10 36 14 40 18 38C16 42 20 46 24 44C28 46 32 42 30 38C34 40 38 36 36 32C40 32 42 28 40 26C44 24 44 20 42 18C44 16 44 12 42 10C40 8 36 8 34 10C32 6 28 4 24 4Z" fill="#EF4444"/>
-            <path d="M18 18L30 30M30 18L18 30" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
-          </svg>
-        `);
-      default: 
-        return 'data:image/svg+xml;base64,' + btoa(`
-          <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="24" cy="40" r="6" fill="#0F172A" opacity="0.3"/>
-            <path d="M24 4C20 4 16 6 14 10C12 8 8 8 6 10C4 12 4 16 6 18C4 20 4 24 8 26C6 28 8 32 12 32C10 36 14 40 18 38C16 42 20 46 24 44C28 46 32 42 30 38C34 40 38 36 36 32C40 32 42 28 40 26C44 24 44 20 42 18C44 16 44 12 42 10C40 8 36 8 34 10C32 6 28 4 24 4Z" fill="#10B981"/>
-            <circle cx="24" cy="24" r="3" fill="#FFFFFF"/>
-          </svg>
-        `);
-    }
-  };
 
 
   const getStatusLabel = (status: string) => {
@@ -411,17 +337,11 @@ const Map = () => {
   }
 
   return (
-    <div className="relative">
+    <div className="w-full h-full overflow-hidden" style={{ touchAction: 'pan-x pan-y' }}>
       <div 
         ref={mapRef} 
+        className="w-full h-full min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-6rem)]"
         style={{
-          position: 'absolute',
-          top: '0px',
-          left: '0',
-          right: '0',
-          bottom: '0px',
-          width: '100%',
-          height: '100vh',
           zIndex: 1
         }}
       />

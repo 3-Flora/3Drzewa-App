@@ -30,7 +30,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
         />
         <label
           htmlFor="image-upload"
-          className="bg-green-600 text-white px-4 py-2 rounded-lg cursor-pointer hover:bg-green-700 transition-colors"
+          className="btn-green text-white px-4 py-2 rounded-lg cursor-pointer transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 font-bold"
         >
           Wybierz zdjęcia
         </label>

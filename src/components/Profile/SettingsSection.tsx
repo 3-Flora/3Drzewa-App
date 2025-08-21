@@ -1,7 +1,7 @@
 import React from 'react';
 import { Settings } from 'lucide-react';
 
-const SettingsSection = () => {
+const SettingsSection: React.FC = () => {
   return (
     <div className="text-center py-16">
       <Settings className="w-20 h-20 text-gray-300 mx-auto mb-6" />

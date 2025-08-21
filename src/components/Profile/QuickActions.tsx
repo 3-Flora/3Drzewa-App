@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FileText, Leaf, CheckCircle } from 'lucide-react';
 
-const QuickActions = () => {
+const QuickActions: React.FC = () => {
   return (
     <div className="grid md:grid-cols-3 gap-6">
       <Link

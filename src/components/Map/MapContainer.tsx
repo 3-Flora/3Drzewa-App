@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Loader } from '@googlemaps/js-api-loader';
 import { TreeSubmission } from '../../types';
 import { fetchTrees } from '../../utils/api';
-import { addTreeMarkers, createTreeDetailsContent } from './TreeMarkers';
-import { createAddTreeContent, createAddTreeInfoWindow } from './AddTreeInfoWindow';
+import { addTreeMarkers } from './TreeMarkers';
+import { createAddTreeInfoWindowWithReact } from './AddTreeInfoWindow';
+import { createTreeDetailsInfoWindowWithReact } from './TreeDetailsInfoWindow';
 import MapErrorBoundary from './MapErrorBoundary';
 
 interface MapContainerProps {
@@ -25,32 +26,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
 
   // Add global functions for InfoWindow buttons
   useEffect(() => {
-    (window as any).addTreeAtLocation = (lat: number, lng: number) => {
-      console.log('Redirecting to submit with:', lat, lng);
-      if (addTreeInfoWindowRef.current) {
-        addTreeInfoWindowRef.current.close();
-      }
-      if (selectedMarkerRef.current) {
-        selectedMarkerRef.current.setMap(null);
-        selectedMarkerRef.current = null;
-      }
-      setSelectedLocation(null);
-      // Use React Router navigation instead of window.location
-      const submitUrl = `/submit?lat=${lat}&lng=${lng}`;
-      window.history.pushState({}, '', submitUrl);
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    };
-    
-    (window as any).cancelAddTree = () => {
-      if (addTreeInfoWindowRef.current) {
-        addTreeInfoWindowRef.current.close();
-      }
-      if (selectedMarkerRef.current) {
-        selectedMarkerRef.current.setMap(null);
-        selectedMarkerRef.current = null;
-      }
-      setSelectedLocation(null);
-    };
+    // No longer needed - using React components instead
   }, []);
 
   // Initialize map
@@ -147,21 +123,28 @@ const MapContainer = ({ children }: MapContainerProps) => {
             selectedMarkerRef.current = selectedMarker;
             
             // Create and show InfoWindow for adding tree
-            const addTreeContent = createAddTreeContent({
-              lat,
-              lng,
-              onAddTree: () => {},
-              onCancel: () => {}
-            });
-            
             if (addTreeInfoWindowRef.current) {
               addTreeInfoWindowRef.current.close();
             }
             
-            addTreeInfoWindowRef.current = createAddTreeInfoWindow(
+            addTreeInfoWindowRef.current = createAddTreeInfoWindowWithReact(
               mapInstance,
               { lat, lng },
-              addTreeContent
+              (lat: number, lng: number) => {
+                console.log('Redirecting to submit with:', lat, lng);
+                if (addTreeInfoWindowRef.current) {
+                  addTreeInfoWindowRef.current.close();
+                }
+                if (selectedMarkerRef.current) {
+                  selectedMarkerRef.current.setMap(null);
+                  selectedMarkerRef.current = null;
+                }
+                setSelectedLocation(null);
+                // Use React Router navigation instead of window.location
+                const submitUrl = `/submit?lat=${lat}&lng=${lng}`;
+                window.history.pushState({}, '', submitUrl);
+                window.dispatchEvent(new PopStateEvent('popstate'));
+              }
             );
             
             addTreeInfoWindowRef.current.open(mapInstance);
@@ -225,16 +208,19 @@ const MapContainer = ({ children }: MapContainerProps) => {
           setSelectedTree(tree);
           
           // Create and show InfoWindow for tree details
-          const treeDetailsContent = createTreeDetailsContent(tree);
-          
           if (treeDetailsInfoWindowRef.current) {
             treeDetailsInfoWindowRef.current.close();
           }
           
-          treeDetailsInfoWindowRef.current = new google.maps.InfoWindow({
-            content: treeDetailsContent,
-            position: { lat: tree.location.lat + 0.0003, lng: tree.location.lng }
-          });
+          treeDetailsInfoWindowRef.current = createTreeDetailsInfoWindowWithReact(
+            map,
+            tree,
+            (treeId: string) => {
+              // Try using pathname approach
+              const newPath = `/tree/${treeId}`;
+              window.location.pathname = newPath;
+            }
+          );
           
           treeDetailsInfoWindowRef.current.open(map);
         }

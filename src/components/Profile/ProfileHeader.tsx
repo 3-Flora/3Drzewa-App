@@ -38,7 +38,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user, monumentCount, onLo
             </div>
             <div className="bg-white rounded-xl md:rounded-2xl p-3 md:p-6 shadow-xl border-2 border-yellow-100">
               <div className="text-xl md:text-3xl font-bold text-yellow-600 mb-1">{monumentCount}</div>
-              <div className="text-xs md:text-sm text-gray-600 font-semibold">Pomników</div>
+              <div className="text-xs md:text-sm text-gray-600 font-semibold">Pomniki</div>
             </div>
           </div>
         </div>

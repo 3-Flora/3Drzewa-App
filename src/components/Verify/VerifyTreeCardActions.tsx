@@ -31,7 +31,7 @@ const VerifyTreeCardActions: React.FC<VerifyTreeCardActionsProps> = ({
             onClick={() => onVote(treeId, 'approve')}
             className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm transition-all duration-300 glass shadow-lg ${
               userVote === 'approve'
-                ? 'bg-green-500 text-white border-2 border-green-500'
+                ? 'btn-green text-white border-2 border-green-500'
                 : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-green-300'
             }`}
           >

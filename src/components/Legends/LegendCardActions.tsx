@@ -24,7 +24,7 @@ const LegendCardActions: React.FC<LegendCardActionsProps> = ({ legend }) => {
           <Heart className="w-4 h-4" />
           <span>{legend.likes}</span>
         </button>
-        <button className="px-6 py-3 glass-accent glass-accent-hover text-white rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+        <button className="px-6 py-3 btn-green text-white rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
           Zobacz na mapie
         </button>
       </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { TreePine, Award, Settings } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -8,6 +8,9 @@ import {
   ProfileHeader,
   QuickActions,
   ProfileSection,
+  TreesSection,
+  StatsSection,
+  SettingsSection,
   NotLoggedIn
 } from '../components/Profile';
 
@@ -94,16 +97,32 @@ const Profile = () => {
           {profileSections.map((section) => (
             <ProfileSection
               key={section.id}
-              section={section}
+              id={section.id}
+              title={section.title}
+              icon={section.icon}
+              emoji={section.emoji}
+              description={section.description}
+              color={section.color}
               activeSection={activeSection}
               onToggle={toggleSection}
-              user={user}
-              userTrees={userTrees}
-              loading={loading}
-              monumentCount={monumentCount}
-              approvedCount={approvedCount}
-              pendingCount={pendingCount}
-            />
+            >
+              {section.id === 'trees' && (
+                <TreesSection trees={userTrees} loading={loading} />
+              )}
+              
+              {section.id === 'stats' && (
+                <StatsSection
+                  user={user}
+                  monumentCount={monumentCount}
+                  approvedCount={approvedCount}
+                  pendingCount={pendingCount}
+                />
+              )}
+              
+              {section.id === 'settings' && (
+                <SettingsSection />
+              )}
+            </ProfileSection>
           ))}
         </div>
       </motion.div>

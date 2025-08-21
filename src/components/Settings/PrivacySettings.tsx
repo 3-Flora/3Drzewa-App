@@ -57,7 +57,7 @@ const PrivacySettings: React.FC<PrivacySettingsProps> = ({
           <button className="w-full bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition-colors font-bold">
             🔐 Zmień hasło
           </button>
-          <button className="w-full bg-green-600 text-white px-6 py-3 rounded-xl hover:bg-green-700 transition-colors font-bold">
+          <button className="w-full btn-green text-white px-6 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1">
             📱 Włącz uwierzytelnianie dwuskładnikowe
           </button>
           <button className="w-full bg-yellow-600 text-white px-6 py-3 rounded-xl hover:bg-yellow-700 transition-colors font-bold">
