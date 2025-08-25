@@ -98,3 +98,84 @@ export interface TreeLegend {
   likes: number;
   treeId?: string;
 }
+
+// Nowe interfejsy dla API
+
+export interface AppStats {
+  totalTrees: number;
+  monuments: number;
+  activeUsers: number;
+  pendingVerifications: number;
+  approvedTrees: number;
+  rejectedTrees: number;
+  newThisMonth: number;
+  topRegions: Array<{ name: string; count: number }>;
+  topSpecies: Array<{ name: string; count: number }>;
+  monthlyGrowth: Array<{ month: string; trees: number; users: number }>;
+}
+
+export interface Municipality {
+  id: string;
+  name: string;
+  voivodeship: string;
+}
+
+export interface ReportType {
+  id: string;
+  name: string;
+  description: string;
+  template: string;
+}
+
+export interface MapConfig {
+  defaultCenter: { lat: number; lng: number };
+  defaultZoom: number;
+  region: string;
+  language: string;
+}
+
+export interface SettingsMenu {
+  mainMenuItems: Array<{
+    title: string;
+    description: string;
+    icon: string;
+    path: string;
+    color: string;
+    bgColor: string;
+    emoji: string;
+  }>;
+  settingsItems: Array<{
+    id: string;
+    title: string;
+    description: string;
+    icon: string;
+    emoji: string;
+  }>;
+}
+
+export interface HomeStats {
+  icon: string;
+  value: string;
+  label: string;
+  color: string;
+}
+
+// Interfejsy dla rejestracji i logowania
+export interface RegisterData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
+}
+
+export interface AuthResponse {
+  user: User;
+  token: string;
+}

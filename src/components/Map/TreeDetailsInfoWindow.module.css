@@ -1,0 +1,131 @@
+.treeDetailsPopup {
+  padding: 8px 12px;
+  min-width: 240px;
+  max-width: 280px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.treeHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.treeInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.treeSpecies {
+  font-size: 15px;
+  font-weight: 800;
+  color: #000000;
+  margin: 2px 0 2px 0;
+  line-height: 1.2;
+}
+
+.treeLatin {
+  font-size: 12px;
+  color: #000000;
+  font-style: italic;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.treeImage {
+  width: 100px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e5e7eb;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.treeStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.statusBadge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.treeLocation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #000000;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.locationText {
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+
+.treeDescription {
+  font-size: 12px;
+  color: #000000;
+  line-height: 1.4;
+  margin-bottom: 8px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  font-weight: 500;
+}
+
+.treeFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.treeCircumference {
+  font-size: 12px;
+  color: #000000;
+  font-weight: 700;
+}
+
+.viewDetailsButton {
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(5, 150, 105, 0.9) 0%, rgba(5, 150, 105, 0.7) 100%);
+  border: none;
+  color: white;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+  font-family: inherit;
+}
+
+.viewDetailsButton:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.4);
+}
+
+.viewDetailsButton:active {
+  transform: translateY(0);
+}
+
+.viewDetailsButton:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.3), 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+

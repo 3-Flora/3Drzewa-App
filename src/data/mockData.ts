@@ -1,4 +1,17 @@
-import { User, TreeSubmission, Comment, TreeSpecies, MunicipalForm, TreeLegend } from '../types';
+import { 
+  User, 
+  TreeSubmission, 
+  Comment, 
+  TreeSpecies, 
+  MunicipalForm, 
+  TreeLegend,
+  AppStats,
+  Municipality,
+  ReportType,
+  MapConfig,
+  SettingsMenu,
+  HomeStats
+} from '../types';
 
 export const mockUsers: User[] = [
   {
@@ -448,3 +461,180 @@ export const mockTreeLegends: TreeLegend[] = [
 
 // Current logged-in user (mock)
 export const currentUser = mockUsers[0];
+
+// App Statistics (for Reports page)
+export const mockAppStats: AppStats = {
+  totalTrees: 2847,
+  monuments: 156,
+  activeUsers: 1234,
+  pendingVerifications: 543,
+  approvedTrees: 2148,
+  rejectedTrees: 156,
+  newThisMonth: 89,
+  topRegions: [
+    { name: 'Mazowieckie', count: 487 },
+    { name: 'Małopolskie', count: 423 },
+    { name: 'Śląskie', count: 356 },
+    { name: 'Wielkopolskie', count: 298 },
+    { name: 'Dolnośląskie', count: 267 }
+  ],
+  topSpecies: [
+    { name: 'Dąb szypułkowy', count: 634 },
+    { name: 'Lipa drobnolistna', count: 456 },
+    { name: 'Buk zwyczajny', count: 389 },
+    { name: 'Klon pospolity', count: 298 },
+    { name: 'Jesion wyniosły', count: 234 }
+  ],
+  monthlyGrowth: [
+    { month: 'Sty', trees: 156, users: 89 },
+    { month: 'Lut', trees: 234, users: 123 },
+    { month: 'Mar', trees: 298, users: 167 },
+    { month: 'Kwi', trees: 367, users: 201 },
+    { month: 'Maj', trees: 445, users: 245 },
+    { month: 'Cze', trees: 523, users: 289 }
+  ]
+};
+
+// Municipalities data (for CreateForm page)
+export const mockMunicipalities: Municipality[] = [
+  { id: '1', name: 'Gmina Kraków', voivodeship: 'Małopolskie' },
+  { id: '2', name: 'Gmina Warszawa', voivodeship: 'Mazowieckie' },
+  { id: '3', name: 'Gmina Gdańsk', voivodeship: 'Pomorskie' },
+  { id: '4', name: 'Gmina Wrocław', voivodeship: 'Dolnośląskie' },
+  { id: '5', name: 'Gmina Poznań', voivodeship: 'Wielkopolskie' },
+  { id: '6', name: 'Gmina Łódź', voivodeship: 'Łódzkie' },
+  { id: '7', name: 'Gmina Katowice', voivodeship: 'Śląskie' },
+  { id: '8', name: 'Gmina Lublin', voivodeship: 'Lubelskie' },
+];
+
+// Report types data (for CreateForm page)
+export const mockReports: ReportType[] = [
+  { 
+    id: '1', 
+    name: 'Wniosek o uznanie za pomnik przyrody', 
+    description: 'Standardowy wniosek zgodny z ustawą o ochronie przyrody',
+    template: 'standard_monument_request'
+  },
+  { 
+    id: '2', 
+    name: 'Wniosek o objęcie ochroną prawną', 
+    description: 'Wniosek o objęcie drzewa szczególną ochroną prawną',
+    template: 'legal_protection_request'
+  },
+  { 
+    id: '3', 
+    name: 'Zgłoszenie zagrożenia pomnika przyrody', 
+    description: 'Zgłoszenie zagrożenia dla istniejącego pomnika przyrody',
+    template: 'threat_report'
+  },
+  { 
+    id: '4', 
+    name: 'Wniosek o rewaloryzację pomnika', 
+    description: 'Wniosek o przeprowadzenie prac rewaloryzacyjnych',
+    template: 'revaluation_request'
+  },
+];
+
+// Home page statistics (for StatsSection component)
+export const mockHomeStats: HomeStats[] = [
+  { icon: 'TreePine', value: '2,847', label: 'Drzew w rejestrze', color: 'text-green-600' },
+  { icon: 'Award', value: '156', label: 'Pomników przyrody', color: 'text-amber-600' },
+  { icon: 'Users', value: '1,234', label: 'Aktywnych użytkowników', color: 'text-blue-600' },
+  { icon: 'Eye', value: '543', label: 'Oczekuje weryfikacji', color: 'text-purple-600' },
+];
+
+// Map configuration (for MapInitializer component)
+export const mockMapConfig: MapConfig = {
+  defaultCenter: { lat: 50.0412, lng: 21.9991 }, // Rzeszów
+  defaultZoom: 13,
+  region: 'PL',
+  language: 'pl'
+};
+
+// Settings menu data (for Settings page)
+export const mockSettingsMenu: SettingsMenu = {
+  mainMenuItems: [
+    {
+      title: 'Moje wnioski',
+      description: 'Przeglądaj wygenerowane wnioski do gmin',
+      icon: 'FileText',
+      path: '/forms',
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
+      emoji: '📄'
+    },
+    {
+      title: 'Gatunki drzew',
+      description: 'Przeglądaj encyklopedię gatunków',
+      icon: 'Leaf',
+      path: '/species',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      emoji: '🌿'
+    },
+    {
+      title: 'Weryfikacja społecznościowa',
+      description: 'Pomóż weryfikować zgłoszenia społeczności',
+      icon: 'CheckCircle',
+      path: '/verify',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      emoji: '✅'
+    },
+    {
+      title: 'Globalne legendy',
+      description: 'Przeglądaj historie i legendy drzew',
+      icon: 'BookOpen',
+      path: '/legends',
+      color: 'text-amber-600',
+      bgColor: 'bg-amber-50',
+      emoji: '📚'
+    },
+    {
+      title: 'Raporty i statystyki',
+      description: 'Zobacz statystyki aplikacji i społeczności',
+      icon: 'BarChart3',
+      path: '/reports',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      emoji: '📊'
+    },
+  ],
+  settingsItems: [
+    {
+      id: 'notifications',
+      title: 'Powiadomienia',
+      description: 'Zarządzaj powiadomieniami push i email',
+      icon: 'Bell',
+      emoji: '🔔'
+    },
+    {
+      id: 'privacy',
+      title: 'Prywatność i bezpieczeństwo',
+      description: 'Ustawienia prywatności i bezpieczeństwa konta',
+      icon: 'Shield',
+      emoji: '🛡️'
+    },
+    {
+      id: 'language',
+      title: 'Język i region',
+      description: 'Zmień język aplikacji i ustawienia regionalne',
+      icon: 'Globe',
+      emoji: '🌍'
+    },
+    {
+      id: 'help',
+      title: 'Pomoc i FAQ',
+      description: 'Często zadawane pytania i wsparcie techniczne',
+      icon: 'HelpCircle',
+      emoji: '❓'
+    },
+    {
+      id: 'about',
+      title: 'O aplikacji',
+      description: 'Informacje o RejestrDrzew i zespole',
+      icon: 'Info',
+      emoji: 'ℹ️'
+    }
+  ]
+};
