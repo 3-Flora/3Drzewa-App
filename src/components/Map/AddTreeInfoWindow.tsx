@@ -6,14 +6,12 @@ interface AddTreeInfoWindowProps {
   lat: number;
   lng: number;
   onAddTree: (lat: number, lng: number) => void;
-  onCancel?: () => void;
 }
 
 export const AddTreeInfoWindow: React.FC<AddTreeInfoWindowProps> = ({ 
   lat, 
   lng, 
-  onAddTree, 
-  onCancel 
+  onAddTree
 }) => {
   const handleAddTree = () => {
     onAddTree(lat, lng);

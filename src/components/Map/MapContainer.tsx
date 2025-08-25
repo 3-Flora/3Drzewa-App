@@ -15,8 +15,6 @@ const MapContainer = ({ children }: MapContainerProps) => {
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [trees, setTrees] = useState<TreeSubmission[]>([]);
-  const [selectedTree, setSelectedTree] = useState<TreeSubmission | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<{lat: number, lng: number} | null>(null);
   const [error, setError] = useState<string | null>(null);
   
   const markersRef = useRef<google.maps.Marker[]>([]);
@@ -89,12 +87,12 @@ const MapContainer = ({ children }: MapContainerProps) => {
             const lng = e.latLng.lng();
             
             // Clear previous tree selection
-            setSelectedTree(null);
+            // setSelectedTree(null); // Removed
             if (treeDetailsInfoWindowRef.current) {
               treeDetailsInfoWindowRef.current.close();
             }
             
-            setSelectedLocation({ lat, lng });
+            // setSelectedLocation({ lat, lng }); // Removed
             
             // Remove previous selected marker
             if (selectedMarkerRef.current) {
@@ -139,7 +137,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
                   selectedMarkerRef.current.setMap(null);
                   selectedMarkerRef.current = null;
                 }
-                setSelectedLocation(null);
+                // setSelectedLocation(null); // Removed
                 // Use React Router navigation instead of window.location
                 const submitUrl = `/submit?lat=${lat}&lng=${lng}`;
                 window.history.pushState({}, '', submitUrl);
@@ -166,7 +164,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
       try {
         const treesData = await fetchTrees();
         // Position trees near Rzeszów for demo
-        const rzeszowTrees = treesData.map((tree, index) => ({
+        const rzeszowTrees = treesData.map((tree) => ({
           ...tree,
           location: {
             ...tree.location,
@@ -196,7 +194,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
         trees,
         onTreeClick: (tree: TreeSubmission) => {
           // Clear selected location when clicking on tree
-          setSelectedLocation(null);
+          // setSelectedLocation(null); // Removed
           if (addTreeInfoWindowRef.current) {
             addTreeInfoWindowRef.current.close();
           }
@@ -205,7 +203,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
             selectedMarkerRef.current = null;
           }
           
-          setSelectedTree(tree);
+          // setSelectedTree(tree); // Removed
           
           // Create and show InfoWindow for tree details
           if (treeDetailsInfoWindowRef.current) {
@@ -213,7 +211,6 @@ const MapContainer = ({ children }: MapContainerProps) => {
           }
           
           treeDetailsInfoWindowRef.current = createTreeDetailsInfoWindowWithReact(
-            map,
             tree,
             (treeId: string) => {
               // Try using pathname approach

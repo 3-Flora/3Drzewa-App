@@ -78,7 +78,6 @@ export const renderTreeDetailsInInfoWindow = (
 
 // Function to create InfoWindow with React component for tree details
 export const createTreeDetailsInfoWindowWithReact = (
-  map: google.maps.Map,
   tree: TreeSubmission,
   onViewDetails: (treeId: string) => void
 ) => {
