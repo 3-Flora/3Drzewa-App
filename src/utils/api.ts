@@ -274,3 +274,53 @@ export async function fetchSettingsMenu(): Promise<SettingsMenu> {
   const { mockSettingsMenu } = await import('../data/mockData');
   return Promise.resolve(mockSettingsMenu);
 }
+
+// Form Operations API
+export async function downloadFormPdf(formId: string): Promise<Blob> {
+  await delay(500);
+  // TODO: podłączyć do backendu .NET API GET /api/forms/{formId}/pdf
+  const form = mockMunicipalForms.find(f => f.id === formId);
+  if (!form) throw new Error('Form not found');
+  
+  // Create mock PDF content
+  const pdfContent = `PDF Content for form ${formId}\n\n${form.content}`;
+  const blob = new Blob([pdfContent], { type: 'application/pdf' });
+  return Promise.resolve(blob);
+}
+
+export async function sendForm(formId: string): Promise<boolean> {
+  await delay(400);
+  // TODO: podłączyć do backendu .NET API POST /api/forms/{formId}/send
+  const form = mockMunicipalForms.find(f => f.id === formId);
+  if (form) {
+    form.status = 'sent';
+    form.sentDate = new Date().toISOString();
+  }
+  return Promise.resolve(true);
+}
+
+export async function deleteForm(formId: string): Promise<boolean> {
+  await delay(300);
+  // TODO: podłączyć do backendu .NET API DELETE /api/forms/{formId}
+  const index = mockMunicipalForms.findIndex(f => f.id === formId);
+  if (index !== -1) {
+    mockMunicipalForms.splice(index, 1);
+  }
+  return Promise.resolve(true);
+}
+
+// Image Upload API
+export async function uploadImage(file: File): Promise<string> {
+  await delay(1000);
+  // TODO: podłączyć do backendu .NET API POST /api/images/upload
+  // Simulate file upload and return mock URL
+  const mockUrl = `https://images.pexels.com/photos/${1172675 + Math.floor(Math.random() * 1000)}/pexels-photo-${1172675 + Math.floor(Math.random() * 1000)}.jpeg?auto=compress&cs=tinysrgb&w=800&h=600&fit=crop`;
+  return Promise.resolve(mockUrl);
+}
+
+export async function uploadMultipleImages(files: File[]): Promise<string[]> {
+  await delay(1500);
+  // TODO: podłączyć do backendu .NET API POST /api/images/upload-multiple
+  const uploadPromises = files.map(file => uploadImage(file));
+  return Promise.all(uploadPromises);
+}

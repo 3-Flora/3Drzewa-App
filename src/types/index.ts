@@ -83,6 +83,7 @@ export interface MunicipalForm {
   generatedDate: string;
   status: 'draft' | 'sent' | 'processed';
   content: string;
+  sentDate?: string;
 }
 
 export interface TreeLegend {
