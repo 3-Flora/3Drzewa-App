@@ -21,7 +21,9 @@ const TreeDetails: React.FC<TreeDetailsProps> = ({ tree }) => {
       
       <div className="flex items-center space-x-2 text-gray-600">
         <User className="w-4 h-4" />
-        <span>Użytkownik #{tree.userId}</span>
+        <span>
+          {(tree as any).user?.name || `Użytkownik #${tree.userId}`}
+        </span>
       </div>
 
       <div className="grid grid-cols-2 gap-4 pt-4">

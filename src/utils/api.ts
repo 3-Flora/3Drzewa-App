@@ -22,109 +22,304 @@ import {
   currentUser 
 } from '../data/mockData';
 
+// API Configuration
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://localhost:7274/api';
+
 // Utility function to simulate API delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// Utility function to make API calls
+const apiCall = async (endpoint: string, options: RequestInit = {}) => {
+  const url = `${API_BASE_URL}${endpoint}`;
+  
+  console.log('🌐 API Call:', url);
+  console.log('🔧 Options:', options);
+  
+  const defaultOptions: RequestInit = {
+    headers: {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    },
+    ...options,
+  };
+
+  try {
+    const response = await fetch(url, defaultOptions);
+    
+    console.log('📡 Response status:', response.status);
+    
+    if (!response.ok) {
+      // Try to get error details from response
+      let errorMessage = `API Error: ${response.status} ${response.statusText}`;
+      try {
+        const errorData = await response.json();
+        console.log('🚨 Error details:', errorData);
+        
+        // Handle different error formats from backend
+        if (errorData.title && errorData.errors) {
+          // Validation errors from .NET backend
+          console.log('🔍 Validation errors:', errorData.errors);
+          
+          // Extract only the first validation error message
+          const firstError = Object.entries(errorData.errors)[0];
+          if (firstError) {
+            const [field, messages] = firstError;
+            if (Array.isArray(messages)) {
+              errorMessage = messages[0]; // Take first message from array
+            } else {
+              errorMessage = messages as string;
+            }
+          } else {
+            errorMessage = errorData.title;
+          }
+        } else if (errorData.error) {
+          errorMessage = errorData.error;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.title) {
+          errorMessage = errorData.title;
+        }
+      } catch (parseError) {
+        console.log('Could not parse error response');
+      }
+      throw new Error(errorMessage);
+    }
+    
+    return await response.json();
+  } catch (error) {
+    console.error('❌ API call failed:', error);
+    throw error;
+  }
+};
+
+// Utility function to get auth headers
+const getAuthHeaders = (): Record<string, string> => {
+  const token = localStorage.getItem('authToken');
+  return token ? { 'Authorization': `Bearer ${token}` } : {};
+};
+
 // Authentication API
 export async function login(email: string, password: string): Promise<User> {
-  await delay(800);
-  // TODO: podłączyć do backendu .NET API POST /api/auth/login
-  
-  // Mock validation
-  if (!email || !password) {
-    throw new Error('Email i hasło są wymagane');
+  try {
+    const response = await apiCall('/Auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+    });
+    
+    // Store token in localStorage
+    if (response.token) {
+      localStorage.setItem('authToken', response.token);
+    }
+    
+    return response.user;
+  } catch (error) {
+    // Log detailed error information
+    console.error('🔴 Login failed:', {
+      error: error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+      email: email
+    });
+    
+    // Re-throw the error so the UI can handle it
+    throw error;
   }
-  
-  // Simulate login success
-  return Promise.resolve(currentUser);
 }
 
 export async function register(userData: RegisterData): Promise<User> {
-  await delay(1000);
-  // TODO: podłączyć do backendu .NET API POST /api/auth/register
-  
-  // Mock validation
-  if (!userData.firstName || !userData.lastName || !userData.email || !userData.password) {
-    throw new Error('Wszystkie pola są wymagane');
-  }
-  
+  // Frontend validation - check if passwords match
   if (userData.password !== userData.confirmPassword) {
     throw new Error('Hasła nie są identyczne');
   }
   
+  // Frontend validation - check password length
   if (userData.password.length < 6) {
     throw new Error('Hasło musi mieć co najmniej 6 znaków');
   }
   
-  // Create new user
-  const newUser: User = {
-    id: Date.now().toString(),
-    email: userData.email,
-    name: `${userData.firstName} ${userData.lastName}`,
-    avatar: 'https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?w=100&h=100&fit=crop',
-    registrationDate: new Date().toISOString(),
-    submissionsCount: 0,
-    verificationsCount: 0,
-  };
-  
-  mockUsers.push(newUser);
-  return Promise.resolve(newUser);
+  try {
+    const response = await apiCall('/Auth/register', {
+      method: 'POST',
+      body: JSON.stringify({
+        firstName: userData.firstName,
+        lastName: userData.lastName,
+        email: userData.email,
+        phone: userData.phone,
+        password: userData.password,
+        confirmPassword: userData.confirmPassword,
+      }),
+    });
+    
+    // Store token in localStorage
+    if (response.token) {
+      localStorage.setItem('authToken', response.token);
+    }
+    
+    return response.user;
+  } catch (error) {
+    // Log detailed error information
+    console.error('🔴 Registration failed:', {
+      error: error,
+      message: error instanceof Error ? error.message : 'Unknown error',
+      timestamp: new Date().toISOString(),
+      email: userData.email,
+      firstName: userData.firstName,
+      lastName: userData.lastName
+    });
+    
+    // Re-throw the error so the UI can handle it
+    throw error;
+  }
 }
 
 // Community Feed API
 export async function fetchCommunityFeed(): Promise<TreeSubmission[]> {
-  await delay(500);
-  // TODO: podłączyć do backendu .NET API GET /api/community/feed
-  return Promise.resolve(mockTreeSubmissions.slice().reverse()); // Latest first
+  try {
+    const response = await apiCall('/Trees', { headers: getAuthHeaders() });
+    
+    // Backend now returns userData directly, so just map the response
+    const mappedTrees = response.map((tree: any) => mapBackendTree(tree));
+    
+    // Reverse for latest first
+    return mappedTrees.reverse();
+  } catch (error) {
+    console.error('🔴 Failed to fetch community feed:', error);
+    // Fallback to mock data if API fails
+    return Promise.resolve(mockTreeSubmissions.slice().reverse());
+  }
 }
+
+// Helper function to map backend status to frontend status
+const mapBackendStatus = (backendStatus: string): string => {
+  switch (backendStatus.toLowerCase()) {
+    case 'pending':
+      return 'pending';
+    case 'approved':
+      return 'approved';
+    case 'monument':
+      return 'monument';
+    case 'rejected':
+      return 'rejected';
+    default:
+      return 'pending';
+  }
+};
+
+// Helper function to map backend tree to frontend format
+const mapBackendTree = (backendTree: any): TreeSubmission => {
+  return {
+    ...backendTree,
+    isMonument: backendTree.isMonument || false,
+    status: mapBackendStatus(backendTree.status),
+    // Backend now provides userData directly, so we can use it
+    user: backendTree.userData ? {
+      id: backendTree.userData.userId || 'unknown',
+      name: backendTree.userData.userName,
+      avatar: backendTree.userData.avatar,
+      email: backendTree.userData.email || 'unknown@example.com'
+    } : undefined
+  };
+};
 
 // Trees API
 export async function fetchTrees(): Promise<TreeSubmission[]> {
-  await delay(500);
-  // TODO: podłączyć do backendu .NET API GET /api/trees
-  return Promise.resolve(mockTreeSubmissions);
+  try {
+    const response = await apiCall('/Trees', { headers: getAuthHeaders() });
+    
+    // Backend now returns userData directly, so just map the response
+    return response.map((tree: any) => mapBackendTree(tree));
+  } catch (error) {
+    console.error('🔴 Failed to fetch trees:', error);
+    // Fallback to mock data if API fails
+    return Promise.resolve(mockTreeSubmissions);
+  }
 }
 
 export async function fetchTreeById(id: string): Promise<TreeSubmission | null> {
-  await delay(300);
-  // TODO: podłączyć do backendu .NET API GET /api/trees/{id}
-  const tree = mockTreeSubmissions.find(t => t.id === id);
-  return Promise.resolve(tree || null);
+  try {
+    const response = await apiCall(`/Trees/${id}`, {
+      headers: getAuthHeaders() // Include auth token
+    });
+    // Map backend response to frontend format
+    return mapBackendTree(response);
+  } catch (error) {
+    console.error('🔴 Failed to fetch tree by ID:', error);
+    // Fallback to mock data if API fails
+    const tree = mockTreeSubmissions.find(t => t.id === id);
+    return Promise.resolve(tree || null);
+  }
 }
 
 export async function submitTree(treeData: Omit<TreeSubmission, 'id' | 'userId' | 'submissionDate' | 'votes'>): Promise<TreeSubmission> {
-  await delay(800);
-  // TODO: podłączyć do backendu .NET API POST /api/trees
-  const newTree: TreeSubmission = {
-    ...treeData,
-    id: Date.now().toString(),
-    userId: currentUser.id,
-    submissionDate: new Date().toISOString(),
-    votes: { approve: 0, reject: 0 }
-  };
-  mockTreeSubmissions.unshift(newTree);
-  return Promise.resolve(newTree);
+  try {
+    // Map frontend data to backend format
+    const backendData = {
+      speciesId: treeData.species || 'unknown', // Use species name as speciesId for now
+      location: treeData.location,
+      circumference: treeData.circumference,
+      height: treeData.height || 0,
+      condition: treeData.condition,
+      isAlive: treeData.isAlive || true,
+      estimatedAge: treeData.estimatedAge || 0,
+      description: treeData.description,
+      images: treeData.images || [],
+      isMonument: treeData.isMonument || false,
+      status: 'Pending' // Set initial status
+    };
+
+    // Send to backend API
+    const response = await apiCall('/Trees', {
+      method: 'POST',
+      body: JSON.stringify(backendData),
+      headers: getAuthHeaders() // Include auth token
+    });
+
+    // Map backend response to frontend format
+    const newTree = mapBackendTree(response);
+    
+    // Add to mock data for immediate UI update (will be replaced by API refresh)
+    mockTreeSubmissions.unshift(newTree);
+    
+    return newTree;
+  } catch (error) {
+    console.error('🔴 Failed to submit tree to backend:', error);
+    // Fallback to mock data if API fails
+    const newTree: TreeSubmission = {
+      ...treeData,
+      id: Date.now().toString(),
+      userId: currentUser.id,
+      submissionDate: new Date().toISOString(),
+      votes: { approve: 0, reject: 0 }
+    };
+    mockTreeSubmissions.unshift(newTree);
+    return Promise.resolve(newTree);
+  }
 }
 
 export async function voteOnTree(treeId: string, vote: 'approve' | 'reject'): Promise<boolean> {
-  await delay(300);
-  // TODO: podłączyć do backendu .NET API POST /api/trees/{treeId}/vote
-  const tree = mockTreeSubmissions.find(t => t.id === treeId);
-  if (tree) {
-    if (tree.userVote === vote) {
-      // Remove vote
-      tree.votes[vote]--;
-      tree.userVote = undefined;
-    } else {
-      // Add or change vote
-      if (tree.userVote) {
-        tree.votes[tree.userVote]--;
+  try {
+    // TODO: podłączyć do backendu .NET API POST /api/trees/{treeId}/vote
+    // For now, use mock data as fallback
+    const tree = mockTreeSubmissions.find(t => t.id === treeId);
+    if (tree) {
+      if (tree.userVote === vote) {
+        // Remove vote
+        tree.votes[vote]--;
+        tree.userVote = undefined;
+      } else {
+        // Add or change vote
+        if (tree.userVote) {
+          tree.votes[tree.userVote]--;
+        }
+        tree.votes[vote]++;
+        tree.userVote = vote;
       }
-      tree.votes[vote]++;
-      tree.userVote = vote;
     }
+    return Promise.resolve(true);
+  } catch (error) {
+    console.error('🔴 Failed to vote on tree:', error);
+    return Promise.resolve(false);
   }
-  return Promise.resolve(true);
 }
 
 // Comments API
@@ -173,23 +368,40 @@ export async function voteOnComment(commentId: string, treeId: string): Promise<
 
 // Species API
 export async function fetchSpecies(): Promise<TreeSpecies[]> {
-  await delay(400);
-  // TODO: podłączyć do backendu .NET API GET /api/species
-  return Promise.resolve(mockTreeSpecies);
+  try {
+    const response = await apiCall('/Species');
+    return response;
+  } catch (error) {
+    console.error('🔴 Failed to fetch species:', error);
+    // Fallback to mock data if API fails
+    return Promise.resolve(mockTreeSpecies);
+  }
 }
 
 export async function fetchSpeciesById(id: string): Promise<TreeSpecies | null> {
-  await delay(300);
-  // TODO: podłączyć do backendu .NET API GET /api/species/{id}
-  const species = mockTreeSpecies.find(s => s.id === id);
-  return Promise.resolve(species || null);
+  try {
+    const response = await apiCall(`/Species/${id}`);
+    return response;
+  } catch (error) {
+    console.error('🔴 Failed to fetch species by ID:', error);
+    // Fallback to mock data if API fails
+    const species = mockTreeSpecies.find(s => s.id === id);
+    return Promise.resolve(species || null);
+  }
 }
 
 // User API
 export async function fetchUserTrees(userId: string): Promise<TreeSubmission[]> {
-  await delay(400);
-  // TODO: podłączyć do backendu .NET API GET /api/users/{userId}/trees
-  return Promise.resolve(mockTreeSubmissions.filter(t => t.userId === userId));
+  try {
+    // Use fetchTrees which now handles users properly
+    const allTrees = await fetchTrees();
+    // Filter for user's trees
+    return allTrees.filter((t: TreeSubmission) => t.userId === userId);
+  } catch (error) {
+    console.error('🔴 Failed to fetch user trees:', error);
+    // Fallback to mock data if API fails
+    return Promise.resolve(mockTreeSubmissions.filter(t => t.userId === userId));
+  }
 }
 
 // Municipal Forms API
@@ -223,9 +435,16 @@ export async function fetchMunicipalForms(): Promise<MunicipalForm[]> {
 
 // Verification API
 export async function fetchPendingVerifications(): Promise<TreeSubmission[]> {
-  await delay(500);
-  // TODO: podłączyć do backendu .NET API GET /api/verification/pending
-  return Promise.resolve(mockTreeSubmissions.filter(t => t.status === 'pending'));
+  try {
+    // Use fetchTrees which now handles users properly
+    const allTrees = await fetchTrees();
+    // Filter for pending trees
+    return allTrees.filter((t: TreeSubmission) => t.status === 'pending');
+  } catch (error) {
+    console.error('🔴 Failed to fetch pending verifications:', error);
+    // Fallback to mock data if API fails
+    return Promise.resolve(mockTreeSubmissions.filter(t => t.status === 'pending'));
+  }
 }
 
 // Global Legends API

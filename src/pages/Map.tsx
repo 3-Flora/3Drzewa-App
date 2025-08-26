@@ -1,12 +1,10 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader } from '@googlemaps/js-api-loader';
-import { Plus, MapPin, TreePine, Award, CheckCircle, Clock } from 'lucide-react';
 import { TreeSubmission } from '../types';
 import { fetchTrees } from '../utils/api';
 import { getTreeMarkerIcon } from '../components/Map/MapUtils';
 import { createAddTreeInfoWindowWithReact } from '../components/Map/AddTreeInfoWindow';
-import { createTreeDetailsInfoWindowWithReact } from '../components/Map/TreeDetailsInfoWindow';
 
 const Map = () => {
   const navigate = useNavigate();
@@ -51,12 +49,12 @@ const Map = () => {
         
         if (!mapRef.current) return;
 
-        // Default to Rzeszów
-        let initialCenter = { lat: 50.0412, lng: 21.9991 };
+        // Default to center of Poland (near Łódź) to show all trees
+        let initialCenter = { lat: 52.2297, lng: 19.9450 };
 
         const mapInstance = new Map(mapRef.current, {
           center: initialCenter,
-          zoom: 13,
+          zoom: 7, // Zoom out to show more of Poland
           mapTypeId: google.maps.MapTypeId.ROADMAP,
           styles: [
             {
@@ -176,16 +174,8 @@ const Map = () => {
   const loadTrees = async () => {
     try {
       const treesData = await fetchTrees();
-      // Position trees near Rzeszów for demo
-      const rzeszowTrees = treesData.map((tree, index) => ({
-        ...tree,
-        location: {
-          ...tree.location,
-          lat: 50.0412 + (Math.random() - 0.5) * 0.1, // Random position around Rzeszów
-          lng: 21.9991 + (Math.random() - 0.5) * 0.1
-        }
-      }));
-      setTrees(rzeszowTrees);
+      // Use original locations from backend API
+      setTrees(treesData);
     } catch (error) {
       console.error('Error loading trees:', error);
     }
@@ -256,13 +246,10 @@ const Map = () => {
               ${tree.description.length > 80 ? tree.description.substring(0, 80) + '...' : tree.description}
             </p>
             
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <div style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
               <div style="font-size: 12px; color: #000000; font-weight: 700;">
                 Pierśnica: ${tree.circumference} cm
               </div>
-              <button onclick="window.viewTreeDetails('${tree.id}')" style="padding: 6px 12px; background: linear-gradient(135deg, rgba(5, 150, 105, 0.9) 0%, rgba(5, 150, 105, 0.7) 100%); border: none; color: white; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);">
-                Zobacz szczegóły
-              </button>
             </div>
           </div>
         `;
@@ -340,8 +327,13 @@ const Map = () => {
     <div className="w-full h-full overflow-hidden" style={{ touchAction: 'pan-x pan-y' }}>
       <div 
         ref={mapRef} 
-        className="w-full h-full min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-6rem)]"
+        className="w-full h-full"
         style={{
+          position: 'absolute',
+          top: '0px',
+          left: '0',
+          right: '0',
+          bottom: '0px',
           zIndex: 1
         }}
       />

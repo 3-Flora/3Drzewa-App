@@ -9,7 +9,7 @@ const Layout = () => {
   return (
     <div className="min-h-screen">
       <Navigation />
-      <main className={`${isMapPage ? 'h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)]' : 'pb-20 md:pb-0'}`}>
+      <main className={`${isMapPage ? 'h-[calc(100vh-8rem)] md:h-[calc(100vh-6rem)]' : 'pb-20 md:pb-0'} pt-16 md:pt-20`}>
         <Outlet />
       </main>
     </div>

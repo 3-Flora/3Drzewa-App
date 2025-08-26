@@ -15,7 +15,8 @@ const TreeCard: React.FC<TreeCardProps> = ({ tree, index }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="bg-white rounded-2xl shadow-2xl border-2 border-gray-100 overflow-hidden hover:shadow-3xl transition-all duration-300"
+      className="bg-white rounded-2xl shadow-2xl border-2 border-gray-100 overflow-hidden hover:shadow-3xl transition-all duration-300 cursor-pointer"
+      onClick={() => window.location.href = `/tree/${tree.id}`}
     >
       <div className="p-8">
         <div className="flex items-start justify-between">

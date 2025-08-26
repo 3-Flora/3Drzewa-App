@@ -1,4 +1,3 @@
-import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth.tsx';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -8,6 +7,7 @@ import Map from './pages/Map';
 import Submit from './pages/Submit';
 import Community from './pages/Community';
 import Settings from './pages/Settings';
+import More from './pages/More';
 
 import Verify from './pages/Verify';
 import Forms from './pages/Forms';
@@ -18,13 +18,12 @@ import TreeDetail from './pages/TreeDetail';
 import Profile from './pages/Profile';
 import Legends from './pages/Legends';
 import CreateForm from './pages/CreateForm';
-import SelectTreeForForm from './pages/SelectTreeForForm';
 import Reports from './pages/Reports';
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
@@ -41,10 +40,11 @@ function App() {
             <Route path="forms/create" element={<CreateForm />} />
             <Route path="settings" element={<Settings />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="more" element={<More />} />
           </Route>
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

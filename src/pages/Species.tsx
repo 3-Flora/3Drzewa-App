@@ -35,8 +35,8 @@ const Species = () => {
   const families = [...new Set(species.map(s => s.family))];
 
   const filteredSpecies = species.filter(s => {
-    const matchesSearch = s.namePolish.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         s.nameLatin.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = s.polishName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      s.latinName.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFamily = filterFamily === 'all' || s.family === filterFamily;
     return matchesSearch && matchesFamily;
   });

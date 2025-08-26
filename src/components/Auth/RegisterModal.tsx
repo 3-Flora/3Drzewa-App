@@ -28,12 +28,46 @@ const RegisterModal = ({ isOpen, onClose }: RegisterModalProps) => {
     setLoading(true);
     setError('');
     
+    // Frontend validation
+    if (!formData.firstName.trim() || !formData.lastName.trim() || 
+        !formData.email.trim() || !formData.phone.trim() || 
+        !formData.password.trim() || !formData.confirmPassword.trim()) {
+      setError('Wypełnij wszystkie pola');
+      setLoading(false);
+      return;
+    }
+    
+    // Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Hasła nie są identyczne');
+      setLoading(false);
+      return;
+    }
+    
+    // Check password length
+    if (formData.password.length < 6) {
+      setError('Hasło musi mieć co najmniej 6 znaków');
+      setLoading(false);
+      return;
+    }
+    
     try {
       await register(formData);
+      // Only navigate on successful registration
       onClose();
       navigate('/map');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wystąpił błąd podczas rejestracji');
+      // Show detailed error message to user
+      const errorMessage = err instanceof Error ? err.message : 'Wystąpił błąd podczas rejestracji';
+      setError(errorMessage);
+      
+      // Log error details to console
+      console.error('🚨 Registration error in UI:', {
+        error: err,
+        message: errorMessage,
+        formData: formData,
+        timestamp: new Date().toISOString()
+      });
     } finally {
       setLoading(false);
     }
@@ -63,7 +97,17 @@ const RegisterModal = ({ isOpen, onClose }: RegisterModalProps) => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-                {error}
+                <div className="flex items-start space-x-2">
+                  <div className="flex-shrink-0">
+                    <svg className="w-5 h-5 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-red-800">Błąd rejestracji</h3>
+                    <p className="mt-1 text-red-700">{error}</p>
+                  </div>
+                </div>
               </div>
             )}
             

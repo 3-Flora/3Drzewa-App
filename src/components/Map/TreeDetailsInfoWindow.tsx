@@ -15,7 +15,7 @@ export const TreeDetailsInfoWindow: React.FC<TreeDetailsInfoWindowProps> = ({ tr
   };
 
   return (
-    <div className={styles.treeDetailsPopup}>
+    <div className={styles.treeDetailsPopup} onClick={handleViewDetails} style={{ cursor: 'pointer' }}>
       <div className={styles.treeHeader}>
         <div className={styles.treeInfo}>
           <h3 className={styles.treeSpecies}>{tree.species}</h3>
@@ -55,12 +55,6 @@ export const TreeDetailsInfoWindow: React.FC<TreeDetailsInfoWindowProps> = ({ tr
         <div className={styles.treeCircumference}>
           Pierśnica: {tree.circumference} cm
         </div>
-        <button 
-          className={styles.viewDetailsButton}
-          onClick={handleViewDetails}
-        >
-          Zobacz szczegóły
-        </button>
       </div>
     </div>
   );

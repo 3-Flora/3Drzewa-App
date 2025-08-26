@@ -2,16 +2,35 @@ import React from 'react';
 import { User, Calendar, Award, CheckCircle, Clock, XCircle } from 'lucide-react';
 
 interface VerifyTreeCardHeaderProps {
-  userId: string;
+  userId?: string;
   submissionDate: string;
   status: string;
+  userData?: {
+    userName: string;
+    avatar?: string;
+    userId?: string;
+    email?: string;
+  };
+  user?: {
+    id: string;
+    name: string;
+    avatar: string;
+    email: string;
+  };
 }
 
 const VerifyTreeCardHeader: React.FC<VerifyTreeCardHeaderProps> = ({
   userId,
   submissionDate,
   status,
+  userData,
+  user,
 }) => {
+  // Use userData from backend if available, fallback to legacy user
+  const displayUser = userData || user;
+  const displayName = displayUser?.userName || displayUser?.name || `Użytkownik #${userId}`;
+  const displayAvatar = displayUser?.avatar;
+
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'monument': return <Award className="w-4 h-4 text-yellow-600" />;
@@ -26,7 +45,7 @@ const VerifyTreeCardHeader: React.FC<VerifyTreeCardHeaderProps> = ({
     switch (status) {
       case 'monument': return 'Pomnik przyrody';
       case 'approved': return 'Zatwierdzony';
-      case 'pending': return 'Oczekuje weryfikacji';
+      case 'pending': return 'Oczekuje';
       case 'rejected': return 'Odrzucony';
       default: return 'Nieznany';
     }
@@ -46,11 +65,21 @@ const VerifyTreeCardHeader: React.FC<VerifyTreeCardHeaderProps> = ({
     <div className="p-4 border-b border-gray-100">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-            <User className="w-5 h-5 text-green-600" />
-          </div>
+          {displayAvatar ? (
+            <img 
+              src={displayAvatar} 
+              alt={displayName}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+          ) : (
+            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+              <User className="w-5 h-5 text-green-600" />
+            </div>
+          )}
           <div>
-            <p className="font-medium text-gray-800">Użytkownik #{userId}</p>
+            <p className="font-medium text-gray-800">
+              {displayName}
+            </p>
             <div className="flex items-center space-x-2 text-sm text-gray-600">
               <Calendar className="w-3 h-3" />
               <span>{new Date(submissionDate).toLocaleDateString('pl-PL')}</span>

@@ -1,22 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { fetchPendingVerifications, voteOnTree, postComment } from '../utils/api';
+import { motion } from 'framer-motion';
 import { TreeSubmission } from '../types';
-import { useAuth } from '../hooks/useAuth';
-import LoadingSpinner from '../components/UI/LoadingSpinner';
+import { fetchPendingVerifications, voteOnTree } from '../utils/api';
 import {
   VerifyHeader,
-  VerifyInstructions,
+  VerifyTreeCard,
   VerifyEmptyState,
-  VerifyTreeCard
 } from '../components/Verify';
 
 const Verify = () => {
   const [trees, setTrees] = useState<TreeSubmission[]>([]);
   const [loading, setLoading] = useState(true);
-  const [commentingOn, setCommentingOn] = useState<string | null>(null);
-  const [newComment, setNewComment] = useState('');
-  const [isLegend, setIsLegend] = useState(false);
-  const { user } = useAuth();
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadPendingVerifications();
@@ -24,10 +19,13 @@ const Verify = () => {
 
   const loadPendingVerifications = async () => {
     try {
-      const pendingTrees = await fetchPendingVerifications();
-      setTrees(pendingTrees);
-    } catch (error) {
-      console.error('Error loading pending verifications:', error);
+      setLoading(true);
+      const pendingData = await fetchPendingVerifications();
+      setTrees(pendingData);
+      setError(null);
+    } catch (err) {
+      console.error('Error loading pending verifications:', err);
+      setError('Nie udało się załadować weryfikacji');
     } finally {
       setLoading(false);
     }
@@ -36,85 +34,92 @@ const Verify = () => {
   const handleVote = async (treeId: string, vote: 'approve' | 'reject') => {
     try {
       await voteOnTree(treeId, vote);
-      // Update local state
+      
       setTrees(prev => prev.map(tree => {
         if (tree.id === treeId) {
-          const newTree = { ...tree };
-          if (newTree.userVote === vote) {
+          // Create a new tree object with updated votes
+          const updatedTree = { ...tree };
+          
+          // If user already voted the same way, remove the vote
+          if (updatedTree.userVote === vote) {
             // Remove vote
-            newTree.votes[vote]--;
-            newTree.userVote = undefined;
+            updatedTree.votes[vote]--;
+            updatedTree.userVote = undefined;
           } else {
             // Add or change vote
-            if (newTree.userVote) {
-              newTree.votes[newTree.userVote]--;
+            if (updatedTree.userVote) {
+              updatedTree.votes[updatedTree.userVote]--;
             }
-            newTree.votes[vote]++;
-            newTree.userVote = vote;
+            updatedTree.votes[vote]++;
+            updatedTree.userVote = vote;
           }
-          return newTree;
+          return updatedTree;
         }
         return tree;
       }));
     } catch (error) {
-      console.error('Error voting:', error);
-    }
-  };
-
-  const handleComment = async (treeId: string) => {
-    if (!newComment.trim()) return;
-    
-    try {
-      await postComment(treeId, newComment, isLegend);
-      setNewComment('');
-      setCommentingOn(null);
-      setIsLegend(false);
-      // In a real app, we'd reload comments or update local state
-    } catch (error) {
-      console.error('Error posting comment:', error);
+      console.error('Error voting on tree:', error);
+      alert('Wystąpił błąd podczas głosowania');
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <LoadingSpinner size="lg" />
-          <p className="mt-4 text-gray-600">Ładowanie weryfikacji...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Ładowanie...</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="max-w-4xl mx-auto p-4 pt-8">
-      <VerifyHeader />
-      <VerifyInstructions />
-
-      {/* Verification Feed */}
-      {trees.length === 0 ? (
-        <VerifyEmptyState />
-      ) : (
-        <div className="flex flex-col space-y-3">
-          {trees.map((tree, index) => (
-            <VerifyTreeCard
-              key={tree.id}
-              tree={tree}
-              index={index}
-              userVote={tree.userVote}
-              onVote={handleVote}
-              onCommentClick={(treeId) => setCommentingOn(commentingOn === treeId ? null : treeId)}
-              onCommentSubmit={handleComment}
-              onCommentCancel={() => setCommentingOn(null)}
-              newComment={newComment}
-              onCommentChange={setNewComment}
-              isLegend={isLegend}
-              onLegendChange={setIsLegend}
-              isCommenting={commentingOn === tree.id}
-            />
-          ))}
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">{error}</p>
+          <button
+            onClick={loadPendingVerifications}
+            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+          >
+            Spróbuj ponownie
+          </button>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  if (trees.length === 0) {
+    return <VerifyEmptyState />;
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <VerifyHeader />
+      
+      <div className="max-w-4xl mx-auto p-4 pt-8 pb-24 md:pb-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="space-y-6"
+        >
+          {trees.map((tree, index) => (
+            <motion.div
+              key={tree.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <VerifyTreeCard
+                tree={tree}
+                userVote={tree.userVote}
+                onVote={handleVote}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 };

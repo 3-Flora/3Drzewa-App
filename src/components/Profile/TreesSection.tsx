@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { TreePine, Award, CheckCircle, Clock, Calendar, MapPin } from 'lucide-react';
 import { TreeSubmission } from '../../types';
 import LoadingSpinner from '../UI/LoadingSpinner';
@@ -11,6 +11,7 @@ interface TreesSectionProps {
 }
 
 const TreesSection: React.FC<TreesSectionProps> = ({ trees, loading }) => {
+  const navigate = useNavigate();
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'monument':
@@ -88,7 +89,8 @@ const TreesSection: React.FC<TreesSectionProps> = ({ trees, loading }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.1 }}
-          className="bg-gray-50 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-emerald-200"
+          className="bg-gray-50 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-emerald-200 cursor-pointer"
+          onClick={() => navigate(`/tree/${tree.id}`)}
         >
           <div className="flex items-start justify-between">
             <div className="flex-1">
@@ -134,17 +136,7 @@ const TreesSection: React.FC<TreesSectionProps> = ({ trees, loading }) => {
               />
             )}
           </div>
-          <div className="flex justify-end space-x-3 mt-6 pt-6 border-t-2 border-gray-200">
-            <Link
-              to={`/tree/${tree.id}`}
-              className="bg-emerald-600 text-white px-6 py-3 rounded-xl hover:bg-emerald-700 transition-all duration-300 font-bold text-sm shadow-lg hover:scale-105"
-            >
-              Zobacz szczegóły
-            </Link>
-            <button className="bg-gray-200 text-gray-700 px-6 py-3 rounded-xl hover:bg-gray-300 transition-all duration-300 font-bold text-sm shadow-lg hover:scale-105">
-              Edytuj
-            </button>
-          </div>
+
         </motion.div>
       ))}
     </div>

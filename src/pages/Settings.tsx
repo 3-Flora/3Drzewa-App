@@ -26,21 +26,6 @@ const Settings = () => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [menuData, setMenuData] = useState<SettingsMenu | null>(null);
   const [loading, setLoading] = useState(true);
-  const [notifications, setNotifications] = useState({
-    push: true,
-    email: true,
-    sms: false,
-    newTrees: true,
-    verifications: true,
-    comments: false
-  });
-  const [privacy, setPrivacy] = useState({
-    profileVisible: true,
-    showEmail: false,
-    showPhone: false,
-    dataSharing: false
-  });
-  const [language, setLanguage] = useState('pl');
   
   // Ref for the settings content container
   const settingsContentRef = useRef<HTMLDivElement>(null);
@@ -88,18 +73,6 @@ const Settings = () => {
       case 'Info': return Info;
       default: return FileText;
     }
-  };
-
-  const handleNotificationChange = (key: string, value: boolean) => {
-    setNotifications(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handlePrivacyChange = (key: string, value: boolean) => {
-    setPrivacy(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleLanguageChange = (newLanguage: string) => {
-    setLanguage(newLanguage);
   };
 
   const handleSectionClick = (sectionId: string) => {
@@ -159,12 +132,6 @@ const Settings = () => {
             <div ref={settingsContentRef}>
               <SettingsContent
                 activeSection={activeSection}
-                notifications={notifications}
-                privacy={privacy}
-                language={language}
-                onNotificationChange={handleNotificationChange}
-                onPrivacyChange={handlePrivacyChange}
-                onLanguageChange={handleLanguageChange}
                 settingsItems={settingsItems}
               />
             </div>

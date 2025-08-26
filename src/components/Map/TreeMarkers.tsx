@@ -65,13 +65,10 @@ export const createTreeDetailsContent = (tree: TreeSubmission) => {
         ${tree.description.length > 80 ? tree.description.substring(0, 80) + '...' : tree.description}
       </p>
       
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+      <div style="display: flex; justify-content: center; align-items: center; margin-top: 8px;">
         <div style="font-size: 12px; color: #000000; font-weight: 700;">
           Pierśnica: ${tree.circumference} cm
         </div>
-        <a href="/tree/${tree.id}" style="padding: 6px 12px; background: linear-gradient(135deg, rgba(5, 150, 105, 0.9) 0%, rgba(5, 150, 105, 0.7) 100%); backdrop-filter: blur(15px); border: 2px solid rgba(5, 150, 105, 0.6); color: white; border-radius: 10px; font-size: 12px; font-weight: 700; text-decoration: none; transition: all 0.3s; box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);">
-          Zobacz szczegóły
-        </a>
       </div>
     </div>
   `;

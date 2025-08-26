@@ -7,13 +7,18 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { isAuthenticated } = useAuth();
+  try {
+    const { isAuthenticated } = useAuth();
+    
+    if (!isAuthenticated) {
+      return <Navigate to="/" replace />;
+    }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <>{children}</>;
+  } catch (error) {
+    // If useAuth throws an error, context is not ready
+    return <div>Loading...</div>;
   }
-
-  return <>{children}</>;
 };
 
 export default ProtectedRoute;

@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext, ReactNode } from 'react';
 import { User } from '../types';
-import { login as mockLogin, register as mockRegister } from '../utils/api';
+import { login, register } from '../utils/api';
 
 interface AuthContextType {
   user: User | null;
@@ -22,28 +22,38 @@ export interface RegisterData {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | null>(() => {
+    // Check if user is already logged in from localStorage
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      // TODO: Validate token with backend and get user data
+      // For now, we'll just assume user is logged in if token exists
+      return { id: '1', name: 'User', email: 'user@example.com', avatar: '' } as User;
+    }
+    return null;
+  });
 
-  const login = async (email: string, password: string) => {
-    const userData = await mockLogin(email, password);
+  const loginHandler = async (email: string, password: string) => {
+    const userData = await login(email, password);
     setUser(userData);
   };
 
-  const register = async (userData: RegisterData) => {
-    const newUser = await mockRegister(userData);
+  const registerHandler = async (userData: RegisterData) => {
+    const newUser = await register(userData);
     setUser(newUser);
   };
 
   const logout = () => {
     setUser(null);
+    localStorage.removeItem('authToken');
   };
 
   return (
     <AuthContext.Provider value={{
       user,
       isAuthenticated: !!user,
-      login,
-      register,
+      login: loginHandler,
+      register: registerHandler,
       logout
     }}>
       {children}

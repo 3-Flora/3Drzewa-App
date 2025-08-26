@@ -53,6 +53,10 @@ const MapContainer = ({ children }: MapContainerProps) => {
           center: initialCenter,
           zoom: 13,
           mapTypeId: google.maps.MapTypeId.ROADMAP,
+          gestureHandling: 'cooperative', // Prevents touchstart conflicts
+          disableDefaultUI: false,
+          zoomControl: true,
+          scrollwheel: true,
           styles: [
             {
               featureType: "poi",
@@ -240,7 +244,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
           right: '0',
           bottom: '0px',
           width: '100%',
-          height: '100vh',
+          height: '100%',
           zIndex: 1
         }}
       />

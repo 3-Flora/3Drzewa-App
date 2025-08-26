@@ -25,7 +25,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ species }) => {
             <TreePine className="w-5 h-5 text-green-600" />
             <h4 className="font-semibold text-gray-800">Wysokość</h4>
           </div>
-          <p className="text-gray-700">{species.characteristics.maxHeight}</p>
+                      <p className="text-gray-700">{species.traits.maxHeight}m</p>
         </div>
 
         <div className="bg-blue-50 p-4 rounded-lg">
@@ -33,7 +33,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ species }) => {
             <Calendar className="w-5 h-5 text-blue-600" />
             <h4 className="font-semibold text-gray-800">Żywotność</h4>
           </div>
-          <p className="text-gray-700">{species.characteristics.lifespan}</p>
+                      <p className="text-gray-700">{species.traits.lifespan}</p>
         </div>
 
         <div className="bg-amber-50 p-4 rounded-lg">
@@ -42,7 +42,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ species }) => {
             <h4 className="font-semibold text-gray-800">Pochodzenie</h4>
           </div>
           <p className="text-gray-700">
-            {species.characteristics.nativeToPoland ? 'Gatunek rodzimy' : 'Gatunek introdukowany'}
+            {species.traits.nativeToPoland ? 'Gatunek rodzimy' : 'Gatunek introdukowany'}
           </p>
         </div>
       </div>

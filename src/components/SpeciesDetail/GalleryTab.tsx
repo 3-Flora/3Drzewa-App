@@ -16,43 +16,22 @@ const GalleryTab: React.FC<GalleryTabProps> = ({ species }) => {
       <h3 className="text-lg font-semibold text-gray-800 mb-4">Galeria zdjęć</h3>
       
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <h4 className="font-medium text-gray-800">Pokrój drzewa</h4>
-          <img
-            src={species.images.tree}
-            alt="Drzewo"
-            className="w-full h-48 object-cover rounded-lg"
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <h4 className="font-medium text-gray-800">Liście</h4>
-          <img
-            src={species.images.leaves}
-            alt="Liście"
-            className="w-full h-48 object-cover rounded-lg"
-          />
-        </div>
-        
-        <div className="space-y-2">
-          <h4 className="font-medium text-gray-800">Kora</h4>
-          <img
-            src={species.images.bark}
-            alt="Kora"
-            className="w-full h-48 object-cover rounded-lg"
-          />
-        </div>
-        
-        {species.images.fruit && (
-          <div className="space-y-2">
-            <h4 className="font-medium text-gray-800">Owoce</h4>
+        {species.images.map((image, index) => (
+          <div key={index} className="space-y-2">
+            <h4 className="font-medium text-gray-800">
+              {image.type === 'Tree' && 'Pokrój drzewa'}
+              {image.type === 'Leaf' && 'Liście'}
+              {image.type === 'Bark' && 'Kora'}
+              {image.type === 'Fruit' && 'Owoce'}
+              {!['Tree', 'Leaf', 'Bark', 'Fruit'].includes(image.type) && image.type}
+            </h4>
             <img
-              src={species.images.fruit}
-              alt="Owoce"
+              src={image.imageUrl}
+              alt={image.altText}
               className="w-full h-48 object-cover rounded-lg"
             />
           </div>
-        )}
+        ))}
       </div>
     </motion.div>
   );

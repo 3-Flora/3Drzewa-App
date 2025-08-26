@@ -1,31 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import NotificationSettings from './NotificationSettings';
-import PrivacySettings from './PrivacySettings';
-import LanguageSettings from './LanguageSettings';
 import HelpSettings from './HelpSettings';
 import AboutSettings from './AboutSettings';
 
 interface SettingsContentProps {
   activeSection: string;
-  notifications: {
-    push: boolean;
-    email: boolean;
-    sms: boolean;
-    newTrees: boolean;
-    verifications: boolean;
-    comments: boolean;
-  };
-  privacy: {
-    profileVisible: boolean;
-    showEmail: boolean;
-    showPhone: boolean;
-    dataSharing: boolean;
-  };
-  language: string;
-  onNotificationChange: (key: string, value: boolean) => void;
-  onPrivacyChange: (key: string, value: boolean) => void;
-  onLanguageChange: (language: string) => void;
   settingsItems: Array<{
     id: string;
     title: string;
@@ -37,12 +16,6 @@ interface SettingsContentProps {
 
 const SettingsContent: React.FC<SettingsContentProps> = ({
   activeSection,
-  notifications,
-  privacy,
-  language,
-  onNotificationChange,
-  onPrivacyChange,
-  onLanguageChange,
   settingsItems
 }) => {
   const getSectionTitle = () => {
@@ -51,27 +24,6 @@ const SettingsContent: React.FC<SettingsContentProps> = ({
 
   const renderSettingsSection = () => {
     switch (activeSection) {
-      case 'notifications':
-        return (
-          <NotificationSettings
-            notifications={notifications}
-            onNotificationChange={onNotificationChange}
-          />
-        );
-      case 'privacy':
-        return (
-          <PrivacySettings
-            privacy={privacy}
-            onPrivacyChange={onPrivacyChange}
-          />
-        );
-      case 'language':
-        return (
-          <LanguageSettings
-            language={language}
-            onLanguageChange={onLanguageChange}
-          />
-        );
       case 'help':
         return <HelpSettings />;
       case 'about':

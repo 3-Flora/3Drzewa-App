@@ -1,6 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { MessageCircle, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { ThumbsUp, ThumbsDown } from 'lucide-react';
 
 interface VerifyTreeCardActionsProps {
   treeId: string;
@@ -10,8 +9,6 @@ interface VerifyTreeCardActionsProps {
     reject: number;
   };
   onVote: (treeId: string, vote: 'approve' | 'reject') => void;
-  onCommentClick: (treeId: string) => void;
-  isCommenting: boolean;
 }
 
 const VerifyTreeCardActions: React.FC<VerifyTreeCardActionsProps> = ({
@@ -19,56 +16,34 @@ const VerifyTreeCardActions: React.FC<VerifyTreeCardActionsProps> = ({
   userVote,
   votes,
   onVote,
-  onCommentClick,
-  isCommenting,
 }) => {
   return (
-    <div className="px-4 py-3 bg-gray-50 border-t border-gray-100 space-y-4">
-      <div className="flex flex-col space-y-3">
-        {/* Like/Dislike buttons */}
-        <div className="flex items-center justify-center space-x-4">
-          <button
-            onClick={() => onVote(treeId, 'approve')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm transition-all duration-300 glass shadow-lg ${
-              userVote === 'approve'
-                ? 'btn-green text-white border-2 border-green-500'
-                : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-green-300'
-            }`}
-          >
-            <ThumbsUp className="w-4 h-4 text-green-500" />
-            <span>{votes.approve}</span>
-          </button>
-          
-          <button
-            onClick={() => onVote(treeId, 'reject')}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-sm transition-all duration-300 glass shadow-lg ${
-              userVote === 'reject'
-                ? 'bg-red-500 text-white border-2 border-red-500'
-                : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-red-300'
-            }`}
-          >
-            <ThumbsDown className="w-4 h-4 text-red-500" />
-            <span>{votes.reject}</span>
-          </button>
-        </div>
+    <div className="flex items-center justify-between p-4 border-t border-gray-100">
+      {/* Approve/Disapprove buttons */}
+      <div className="flex items-center space-x-4">
+        <button
+          onClick={() => onVote(treeId, 'approve')}
+          className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+            userVote === 'approve'
+              ? 'bg-green-100 text-green-700 border border-green-300'
+              : 'bg-gray-50 text-gray-600 hover:bg-green-50 hover:text-green-600 hover:border-green-200 border border-gray-200'
+          }`}
+        >
+          <ThumbsUp className="w-4 h-4" />
+          <span>{votes.approve}</span>
+        </button>
         
-        {/* Comment and Details buttons */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={() => onCommentClick(treeId)}
-            className="flex items-center space-x-2 px-4 py-2 rounded-xl text-sm text-blue-600 glass-secondary glass-secondary-hover transition-all duration-300 shadow-lg"
-          >
-            <MessageCircle className="w-4 h-4" />
-            <span>Komentuj</span>
-          </button>
-          
-          <Link
-            to={`/tree/${treeId}`}
-            className="text-sm px-4 py-2 rounded-xl font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300 text-white btn-green"
-          >
-            Zobacz szczegóły →
-          </Link>
-        </div>
+        <button
+          onClick={() => onVote(treeId, 'reject')}
+          className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
+            userVote === 'reject'
+              ? 'bg-red-100 text-red-700 border border-red-300'
+              : 'bg-gray-50 text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-gray-200'
+          }`}
+        >
+          <ThumbsDown className="w-4 h-4" />
+          <span>{votes.reject}</span>
+        </button>
       </div>
     </div>
   );

@@ -66,6 +66,7 @@ export const mockTreeSubmissions: TreeSubmission[] = [
     circumference: 520,
     height: 28,
     condition: 'excellent',
+    isAlive: true,
     isMonument: true,
     description: 'Wspaniały okaz dębu szypułkowego w Parku Łazienkowskim. Ten majestatyczny dąb rośnie tuż przy Pałacu na Wyspie i jest jednym z najstarszych drzew w parku. Szacowany wiek około 300 lat. Drzewo ma charakterystyczną, rozłożystą koronę i imponujący pień. W cieniu tego dęba odpoczywali już królowie polscy.',
     images: [
@@ -89,6 +90,7 @@ export const mockTreeSubmissions: TreeSubmission[] = [
     circumference: 380,
     height: 22,
     condition: 'good',
+    isAlive: true,
     isMonument: false,
     description: 'Piękna lipa na Rynku Głównym w Krakowie, rosnąca w pobliżu Sukiennic. To drzewo pamięta czasy średniowiecza i było świadkiem wielu historycznych wydarzeń. Każdego lata jej kwiaty wypełniają powietrze cudownym aromatem, przyciągając pszczoły z całej okolicy. Lokalni mieszkańcy nazywają ją "Lipą Mariacką".',
     images: [
@@ -112,6 +114,7 @@ export const mockTreeSubmissions: TreeSubmission[] = [
     circumference: 420,
     height: 30,
     condition: 'excellent',
+    isAlive: true,
     isMonument: false,
     description: 'Potężny buk w Parku Oliwskim, jeden z najstarszych okazów w regionie. Drzewo rośnie w malowniczej alei bukowej, która jesienią zamienia się w złoty tunel. Ten konkretny okaz wyróżnia się niezwykle gładką, srebrzystą korą i idealnie symetryczną koroną. Miejscowi biegacze często zatrzymują się pod nim, aby odpocząć.',
     images: [
@@ -134,6 +137,7 @@ export const mockTreeSubmissions: TreeSubmission[] = [
     circumference: 290,
     height: 18,
     condition: 'good',
+    isAlive: true,
     isMonument: false,
     description: 'Wspaniały klon rosnący w Parku Szczytnickim we Wrocławiu. Drzewo znajduje się w pobliżu słynnej Hali Stulecia i jest ulubionym miejscem fotografów, szczególnie jesienią, gdy jego liście przybierają spektakularne odcienie żółci i czerwieni. Pod tym klonem często organizowane są plenerowe lekcje botaniki dla dzieci.',
     images: [
@@ -156,6 +160,7 @@ export const mockTreeSubmissions: TreeSubmission[] = [
     circumference: 340,
     height: 25,
     condition: 'fair',
+    isAlive: true,
     isMonument: false,
     description: 'Majestatyczny jesion rosnący nad stawem w Parku Kościuszki w Katowicach. To drzewo jest szczególnie piękne wiosną, gdy pokrywa się delikatnymi, jasnozielonymi liśćmi. Niestety, w ostatnich latach widać oznaki choroby - zamieranie pędów, co jest typowe dla jesionów w Polsce. Wymaga pilnej opieki dendrologicznej.',
     images: [
@@ -251,11 +256,11 @@ export const mockComments: { [treeId: string]: Comment[] } = {
 export const mockTreeSpecies: TreeSpecies[] = [
   {
     id: '1',
-    namePolish: 'Dąb szypułkowy',
-    nameLatin: 'Quercus robur',
+    polishName: 'Dąb szypułkowy',
+    latinName: 'Quercus robur',
     family: 'Fagaceae',
     description: 'Dąb szypułkowy to jeden z najważniejszych gatunków drzew w Polsce. Może żyć ponad 1000 lat i osiągać wysokość do 40 metrów. Jest symbolem siły, trwałości i mądrości w kulturze słowiańskiej. Drewno dębu było używane do budowy statków, domów i mebli przez wieki.',
-    identificationTips: [
+    identificationGuide: [
       'Liście z wyraźnymi wcięciami, bez szypułek lub z bardzo krótkimi szypułkami',
       'Żołędzie na długich szypułkach (2-8 cm), dojrzewają jesienią',
       'Kora szara, głęboko bruzdowna u starych okazów, gładka u młodych',
@@ -268,25 +273,41 @@ export const mockTreeSpecies: TreeSpecies[] = [
       autumn: 'Liście żółto-brązowe, opadają późno w sezonie. Dojrzałe żołędzie opadają i są zbierane przez zwierzęta',
       winter: 'Charakterystyczna sylwetka z grubym pniem i rozłożystymi gałęziami. Kora wyraźnie bruzdowna'
     },
-    images: {
-      tree: 'https://images.pexels.com/photos/1172675/pexels-photo-1172675.jpeg?w=800&h=600&fit=crop',
-      leaves: 'https://images.pexels.com/photos/1379636/pexels-photo-1379636.jpeg?w=800&h=600&fit=crop',
-      bark: 'https://images.pexels.com/photos/1448055/pexels-photo-1448055.jpeg?w=800&h=600&fit=crop',
-      fruit: 'https://images.pexels.com/photos/33109/fall-autumn-red-season.jpg?w=800&h=600&fit=crop',
-    },
-    characteristics: {
-      maxHeight: '40 m',
+    images: [
+      {
+        imageUrl: 'https://images.pexels.com/photos/1172675/pexels-photo-1172675.jpeg?w=800&h=600&fit=crop',
+        type: 'Tree',
+        altText: 'Dąb szypułkowy - pokrój drzewa'
+      },
+      {
+        imageUrl: 'https://images.pexels.com/photos/1379636/pexels-photo-1379636.jpeg?w=800&h=600&fit=crop',
+        type: 'Leaf',
+        altText: 'Dąb szypułkowy - liście'
+      },
+      {
+        imageUrl: 'https://images.pexels.com/photos/1448055/pexels-photo-1448055.jpeg?w=800&h=600&fit=crop',
+        type: 'Bark',
+        altText: 'Dąb szypułkowy - kora'
+      },
+      {
+        imageUrl: 'https://images.pexels.com/photos/33109/fall-autumn-red-season.jpg?w=800&h=600&fit=crop',
+        type: 'Fruit',
+        altText: 'Dąb szypułkowy - owoce'
+      }
+    ],
+    traits: {
+      maxHeight: 40,
       lifespan: 'Ponad 1000 lat',
       nativeToPoland: true,
     },
   },
   {
-    id: '2',
-    namePolish: 'Lipa drobnolistna',
-    nameLatin: 'Tilia cordata',
+    id: 'd9186f36-7249-4363-950c-28b778bf4958',
+    polishName: 'Lipa drobnolistna',
+    latinName: 'Tilia cordata',
     family: 'Malvaceae',
     description: 'Lipa drobnolistna to drzewo o wielkiej wartości kulturowej i przyrodniczej. Od wieków sadzona w centrach miast i przy dworkach. W tradycji słowiańskiej lipa była drzewem świętym, symbolem miłości i sprawiedliwości. Pod lipami odbywały się sądy i zgromadzenia wiejskie.',
-    identificationTips: [
+    identificationGuide: [
       'Małe, sercowate liście z ząbkowanymi brzegami (3-6 cm długości)',
       'Kwiaty żółtawe, bardzo pachnące, zebrane w baldachogrona (czerwiec-lipiec)',
       'Owoce kuliste z charakterystyczną przysadką - skrzydełkiem',
@@ -299,24 +320,36 @@ export const mockTreeSpecies: TreeSpecies[] = [
       autumn: 'Liście żółte, opadają wcześnie. Dojrzałe owoce z przysadkami unoszą się na wietrze',
       winter: 'Charakterystyczne rozgałęzienie, często przystrzyżone w parkach. Pąki czerwonawe'
     },
-    images: {
-      tree: 'https://images.pexels.com/photos/1172675/pexels-photo-1172675.jpeg?w=800&h=600&fit=crop',
-      leaves: 'https://images.pexels.com/photos/1179229/pexels-photo-1179229.jpeg?w=800&h=600&fit=crop',
-      bark: 'https://images.pexels.com/photos/1448055/pexels-photo-1448055.jpeg?w=800&h=600&fit=crop',
-    },
-    characteristics: {
-      maxHeight: '30 m',
+    images: [
+      {
+        imageUrl: 'https://images.pexels.com/photos/1375849/pexels-photo-1375849.jpeg?w=800&h=600&fit=crop',
+        type: 'Leaf',
+        altText: 'Lipa drobnolistna - liście'
+      },
+      {
+        imageUrl: 'https://images.pexels.com/photos/1658967/pexels-photo-1658967.jpeg?w=800&h=600&fit=crop',
+        type: 'Tree',
+        altText: 'Lipa drobnolistna - drzewo'
+      },
+      {
+        imageUrl: 'https://images.pexels.com/photos/1448055/pexels-photo-1448055.jpeg?w=800&h=600&fit=crop',
+        type: 'Bark',
+        altText: 'Lipa drobnolistna - kora'
+      }
+    ],
+    traits: {
+      maxHeight: 30,
       lifespan: '800-1000 lat',
       nativeToPoland: true,
     },
   },
   {
     id: '3',
-    namePolish: 'Buk zwyczajny',
-    nameLatin: 'Fagus sylvatica',
+    polishName: 'Buk zwyczajny',
+    latinName: 'Fagus sylvatica',
     family: 'Fagaceae',
     description: 'Buk zwyczajny to "król lasów liściastych" w Polsce. Tworzy charakterystyczne "katedry bukowe" - lasy o wysokich, prostych pniach i zwartym sklepieniu koron. Drewno buka jest bardzo twarde i było używane do produkcji narzędzi, mebli i węgla drzewnego.',
-    identificationTips: [
+    identificationGuide: [
       'Liście owalne, faliste brzegi, wyraźne nerwowanie (6-12 cm długości)',
       'Kora gładka, szara, charakterystyczna przez całe życie drzewa',
       'Owoce - trójkątne orzeszki w kolczastych okrywach (żołędzie bukowe)',
@@ -329,13 +362,25 @@ export const mockTreeSpecies: TreeSpecies[] = [
       autumn: 'Spektakularne żółto-brązowo-miedziane ubarwienie. Opadające liście tworzą grubą ściółkę',
       winter: 'Gładka, szara kora wyraźnie widoczna. Długie, spiczaste pąki na końcach gałązek'
     },
-    images: {
-      tree: 'https://images.pexels.com/photos/1172675/pexels-photo-1172675.jpeg?w=800&h=600&fit=crop',
-      leaves: 'https://images.pexels.com/photos/1179229/pexels-photo-1179229.jpeg?w=800&h=600&fit=crop',
-      bark: 'https://images.pexels.com/photos/1448055/pexels-photo-1448055.jpeg?w=800&h=600&fit=crop',
-    },
-    characteristics: {
-      maxHeight: '45 m',
+    images: [
+      {
+        imageUrl: 'https://images.pexels.com/photos/1172675/pexels-photo-1172675.jpeg?w=800&h=600&fit=crop',
+        type: 'Tree',
+        altText: 'Buk zwyczajny - pokrój drzewa'
+      },
+      {
+        imageUrl: 'https://images.pexels.com/photos/1179229/pexels-photo-1179229.jpeg?w=800&h=600&fit=crop',
+        type: 'Leaf',
+        altText: 'Buk zwyczajny - liście'
+      },
+      {
+        imageUrl: 'https://images.pexels.com/photos/1448055/pexels-photo-1448055.jpeg?w=800&h=600&fit=crop',
+        type: 'Bark',
+        altText: 'Buk zwyczajny - kora'
+      }
+    ],
+    traits: {
+      maxHeight: 45,
       lifespan: '300-500 lat',
       nativeToPoland: true,
     },

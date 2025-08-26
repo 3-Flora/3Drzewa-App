@@ -82,7 +82,8 @@ const Submit = () => {
           address: data.address
         },
         images: imageUrls,
-        status: 'pending'
+        status: 'pending',
+        isAlive: true // All submitted trees are alive
       };
 
       const newTree = await submitTree(treeData);

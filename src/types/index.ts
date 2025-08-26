@@ -10,7 +10,7 @@ export interface User {
 
 export interface TreeSubmission {
   id: string;
-  userId: string;
+  userId?: string; // Optional in backend response
   species: string;
   speciesLatin: string;
   location: {
@@ -21,11 +21,13 @@ export interface TreeSubmission {
   circumference: number; // pierśnica
   height?: number;
   condition: 'excellent' | 'good' | 'fair' | 'poor';
-  isMonument: boolean;
+  isAlive: boolean; // Backend uses isAlive instead of isMonument
+  isMonument?: boolean; // Keep for backward compatibility
+  estimatedAge?: number; // New field from backend
   description: string;
   images: string[];
   videos?: string[];
-  status: 'pending' | 'approved' | 'rejected' | 'monument';
+  status: string; // Backend returns string, not enum
   submissionDate: string;
   approvalDate?: string;
   votes: {
@@ -33,6 +35,20 @@ export interface TreeSubmission {
     reject: number;
   };
   userVote?: 'approve' | 'reject';
+  // New field from backend - userData contains user information
+  userData?: {
+    userName: string;
+    avatar?: string;
+    userId?: string;
+    email?: string;
+  };
+  // Legacy user field for backward compatibility
+  user?: {
+    id: string;
+    name: string;
+    avatar?: string;
+    email: string;
+  };
 }
 
 export interface Comment {
@@ -49,25 +65,24 @@ export interface Comment {
 
 export interface TreeSpecies {
   id: string;
-  namePolish: string;
-  nameLatin: string;
+  polishName: string;
+  latinName: string;
   family: string;
   description: string;
-  identificationTips: string[];
+  identificationGuide: string[];
   seasonalChanges: {
     spring: string;
     summer: string;
     autumn: string;
     winter: string;
   };
-  images: {
-    tree: string;
-    leaves: string;
-    bark: string;
-    fruit?: string;
-  };
-  characteristics: {
-    maxHeight: string;
+  images: Array<{
+    imageUrl: string;
+    type: string;
+    altText: string;
+  }>;
+  traits: {
+    maxHeight: number;
     lifespan: string;
     nativeToPoland: boolean;
   };
