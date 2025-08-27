@@ -105,39 +105,42 @@ const TreeDetail = () => {
   const legends = comments.filter(c => c.isLegend);
 
   return (
-    <div className="max-w-4xl mx-auto p-4 pt-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="space-y-6"
-      >
-        <TreeDetailHeader />
-        <TreeInfo tree={tree} />
-        <TreeContent tree={tree} onImageClick={handleImageClick} />
-        <LegendsSection legends={legends} onVote={handleVoteComment} />
-        <CommentsSection
-          comments={comments}
-          newComment={newComment}
-          isLegend={isLegend}
-          commentsLoading={commentsLoading}
-          onCommentChange={setNewComment}
-          onLegendChange={setIsLegend}
-          onSubmit={handleComment}
-          onVote={handleVoteComment}
-        />
-
-        <Modal
-          isOpen={showImageModal}
-          onClose={() => setShowImageModal(false)}
-          title="Zdjęcie drzewa"
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
+      <TreeDetailHeader />
+      
+      <div className="max-w-4xl mx-auto p-4 pt-8 pb-24 md:pb-8 lg:px-8 lg:py-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-8"
         >
-          <img
-            src={selectedImage}
-            alt="Powiększone zdjęcie"
-            className="w-full max-h-96 object-contain rounded-lg"
+          <TreeInfo tree={tree} />
+          <TreeContent tree={tree} onImageClick={handleImageClick} />
+          <LegendsSection legends={legends} onVote={handleVoteComment} />
+          <CommentsSection
+            comments={comments}
+            newComment={newComment}
+            isLegend={isLegend}
+            commentsLoading={commentsLoading}
+            onCommentChange={setNewComment}
+            onLegendChange={setIsLegend}
+            onSubmit={handleComment}
+            onVote={handleVoteComment}
           />
-        </Modal>
-      </motion.div>
+
+          <Modal
+            isOpen={showImageModal}
+            onClose={() => setShowImageModal(false)}
+            title="Zdjęcie drzewa"
+          >
+            <img
+              src={selectedImage}
+              alt="Powiększone zdjęcie"
+              className="w-full max-h-96 object-contain rounded-lg"
+            />
+          </Modal>
+        </motion.div>
+      </div>
     </div>
   );
 };

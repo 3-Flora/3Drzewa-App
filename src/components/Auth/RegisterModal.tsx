@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Modal from '../UI/Modal';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { useAuth, RegisterData } from '../../hooks/useAuth';
+import { useNavigationHistory } from '../../hooks/useNavigationHistory';
 
 interface RegisterModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const RegisterModal = ({ isOpen, onClose }: RegisterModalProps) => {
+const RegisterModal: React.FC<RegisterModalProps> = ({ isOpen, onClose }) => {
   const [formData, setFormData] = useState<RegisterData>({
     firstName: '',
     lastName: '',
@@ -21,7 +21,7 @@ const RegisterModal = ({ isOpen, onClose }: RegisterModalProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { register } = useAuth();
-  const navigate = useNavigate();
+  const { navigateWithHistory } = useNavigationHistory();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +55,7 @@ const RegisterModal = ({ isOpen, onClose }: RegisterModalProps) => {
       await register(formData);
       // Only navigate on successful registration
       onClose();
-      navigate('/map');
+      navigateWithHistory('/map');
     } catch (err) {
       // Show detailed error message to user
       const errorMessage = err instanceof Error ? err.message : 'Wystąpił błąd podczas rejestracji';

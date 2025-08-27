@@ -10,6 +10,7 @@ import {
   User,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
+import DarkModeToggle from '../UI/DarkModeToggle';
 
 const Navigation = () => {
   const location = useLocation();
@@ -94,7 +95,7 @@ const Navigation = () => {
     <>
       {/* Desktop Navigation - Sticky Top */}
       <motion.nav 
-        className="hidden md:flex bg-white shadow-xl border-b-4 border-emerald-200 px-8 py-2 sticky top-0 z-50"
+        className="hidden lg:flex bg-white dark:bg-dark-card shadow-xl border-b-4 border-emerald-200 dark:border-emerald-700 px-8 py-2 sticky top-0 z-50 transition-colors duration-200"
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -106,7 +107,7 @@ const Navigation = () => {
           >
             <Link 
               to="/" 
-              className="flex items-center space-x-3 text-accent-700 font-bold text-xl hover:text-accent-800 transition-colors"
+              className="flex items-center space-x-3 text-accent-700 dark:text-accent-400 font-bold text-xl hover:text-accent-800 dark:hover:text-accent-300 transition-colors"
             >
               <img 
                 src="/image copy.png"
@@ -134,7 +135,7 @@ const Navigation = () => {
                     className={`flex flex-col items-center py-2 px-2 rounded-2xl transition-all duration-300 min-w-0 flex-1 relative ${
                       isActive
                         ? `text-white`
-                        : `${item.textColor} hover:scale-105 hover:bg-white/10`
+                        : `${item.textColor} hover:scale-105 hover:bg-gray-100/10 dark:hover:bg-dark-hover/50`
                     }`}
                   >
                     {isActive && (
@@ -161,34 +162,36 @@ const Navigation = () => {
             })}
           </div>
 
-          {user && (
-            <motion.div 
-              className="relative group"
-              whileHover={{ scale: 1.05 }}
-            >
-              <Link
-                to="/profile"
-                className="flex items-center space-x-3 px-4 py-2 rounded-2xl text-sm font-bold text-gray-700 hover:text-accent-700 hover:bg-gray-50 transition-all duration-300"
+          <div className="flex items-center space-x-3">
+            <DarkModeToggle />
+            {user && (
+              <motion.div 
+                className="relative group"
+                whileHover={{ scale: 1.05 }}
               >
-                <span>{user.name.split(' ')[0]}</span>
-                {user.avatar ? (
-                  <motion.img 
-                    src={user.avatar} 
-                    alt={user.name} 
-                    className="w-8 h-8 rounded-full border-2 border-emerald-400 shadow-lg" 
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.5 }}
-                  />
-                ) : (
-                  <motion.div 
-                    className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-300 shadow-lg"
-                    whileHover={{ rotate: 360 }}
-                    transition={{ duration: 0.5 }}
-                  >
-                    <User className="w-4 h-4 text-gray-600" />
-                  </motion.div>
-                )}
-              </Link>
+                <Link
+                  to="/profile"
+                  className="flex items-center space-x-3 px-4 py-2 rounded-2xl text-sm font-bold text-gray-700 hover:text-accent-700 hover:bg-gray-50 transition-all duration-300"
+                >
+                  <span>{user.name.split(' ')[0]}</span>
+                  {user.avatar ? (
+                    <motion.img 
+                      src={user.avatar} 
+                      alt={user.name} 
+                      className="w-8 h-8 rounded-full border-2 border-emerald-400 shadow-lg" 
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    />
+                  ) : (
+                    <motion.div 
+                      className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-300 shadow-lg"
+                      whileHover={{ rotate: 360 }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <User className="w-4 h-4 text-gray-600" />
+                    </motion.div>
+                  )}
+                </Link>
               
               {/* Dropdown Menu */}
               <motion.div 
@@ -218,16 +221,17 @@ const Navigation = () => {
                   </button>
                 </div>
               </motion.div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
+          </div>
         </div>
       </motion.nav>
 
       {/* Mobile Top Bar with Profile - Sticky Top */}
-      <div className="md:hidden bg-white shadow-xl border-b-4 border-primary-200 px-4 py-2 flex items-center justify-between sticky top-0 z-50">
+      <div className="lg:hidden bg-white dark:bg-dark-card shadow-xl border-b-4 border-primary-200 dark:border-primary-700 px-4 py-2 flex items-center justify-between sticky top-0 z-50 transition-colors duration-200">
         <Link 
           to="/" 
-          className="flex items-center space-x-3 text-accent-700 font-bold text-xl hover:text-accent-800 transition-colors"
+          className="flex items-center space-x-3 text-accent-700 dark:text-accent-400 font-bold text-xl hover:text-accent-800 dark:hover:text-accent-300 transition-colors"
         >
           <img 
             src="/image copy.png"
@@ -237,25 +241,28 @@ const Navigation = () => {
           <span>3Drzewa</span>
         </Link>
         
-        {user && (
-          <Link
-            to="/profile"
-            className="flex items-center space-x-2 bg-white hover:bg-gray-50 px-3 py-2 rounded-2xl transition-all duration-300 shadow-lg border border-gray-200"
-          >
-            <span className="text-sm font-bold text-gray-700">{user.name.split(' ')[0]}</span>
-            {user.avatar ? (
-              <img src={user.avatar} alt={user.name} className="w-6 h-6 rounded-full border-2 border-emerald-400" />
-            ) : (
-              <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-300">
-                <User className="w-3 h-3 text-gray-600" />
-              </div>
-            )}
-          </Link>
-        )}
+        <div className="flex items-center space-x-2">
+          <DarkModeToggle />
+          {user && (
+            <Link
+              to="/profile"
+              className="flex items-center space-x-2 bg-white hover:bg-gray-50 px-3 py-2 rounded-2xl transition-all duration-300 shadow-lg border border-gray-200"
+            >
+              <span className="text-sm font-bold text-gray-700">{user.name.split(' ')[0]}</span>
+              {user.avatar ? (
+                <img src={user.avatar} alt={user.name} className="w-6 h-6 rounded-full border-2 border-emerald-400" />
+              ) : (
+                <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center border-2 border-gray-300">
+                  <User className="w-3 h-3 text-gray-600" />
+                </div>
+              )}
+            </Link>
+          )}
+        </div>
       </div>
 
       {/* Mobile Navigation - Sticky Bottom */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t-4 border-primary-200 shadow-2xl z-50 safe-area-bottom">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-dark-card border-t-4 border-primary-200 dark:border-primary-700 shadow-2xl z-50 safe-area-bottom transition-colors duration-200">
         <motion.div 
           className="flex justify-around py-2 px-2"
           initial={{ y: 100 }}
@@ -275,7 +282,7 @@ const Navigation = () => {
                   className={`flex flex-col items-center py-3 px-2 rounded-2xl transition-all duration-300 min-w-0 flex-1 relative ${
                     isActive
                       ? `text-white`
-                      : `hover:scale-105 hover:bg-white/10 ${item.textColor}`
+                      : `hover:scale-105 hover:bg-gray-100/10 dark:hover:bg-dark-hover/50 ${item.textColor}`
                   }`}
                 >
                   {isActive && (

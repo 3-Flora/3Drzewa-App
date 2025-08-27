@@ -6,6 +6,7 @@ import { addTreeMarkers } from './TreeMarkers';
 import { createAddTreeInfoWindowWithReact } from './AddTreeInfoWindow';
 import { createTreeDetailsInfoWindowWithReact } from './TreeDetailsInfoWindow';
 import MapErrorBoundary from './MapErrorBoundary';
+import { useNavigationHistory } from '../../hooks/useNavigationHistory';
 
 interface MapContainerProps {
   children?: React.ReactNode;
@@ -16,6 +17,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [trees, setTrees] = useState<TreeSubmission[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { navigateWithHistory } = useNavigationHistory();
   
   const markersRef = useRef<google.maps.Marker[]>([]);
   const selectedMarkerRef = useRef<google.maps.Marker | null>(null);
@@ -91,12 +93,9 @@ const MapContainer = ({ children }: MapContainerProps) => {
             const lng = e.latLng.lng();
             
             // Clear previous tree selection
-            // setSelectedTree(null); // Removed
             if (treeDetailsInfoWindowRef.current) {
               treeDetailsInfoWindowRef.current.close();
             }
-            
-            // setSelectedLocation({ lat, lng }); // Removed
             
             // Remove previous selected marker
             if (selectedMarkerRef.current) {
@@ -141,11 +140,9 @@ const MapContainer = ({ children }: MapContainerProps) => {
                   selectedMarkerRef.current.setMap(null);
                   selectedMarkerRef.current = null;
                 }
-                // setSelectedLocation(null); // Removed
                 // Use React Router navigation instead of window.location
                 const submitUrl = `/submit?lat=${lat}&lng=${lng}`;
-                window.history.pushState({}, '', submitUrl);
-                window.dispatchEvent(new PopStateEvent('popstate'));
+                navigateWithHistory(submitUrl);
               }
             );
             
@@ -160,7 +157,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
     };
 
     initMap();
-  }, []);
+  }, [navigateWithHistory]);
 
   // Load trees
   useEffect(() => {
@@ -198,7 +195,6 @@ const MapContainer = ({ children }: MapContainerProps) => {
         trees,
         onTreeClick: (tree: TreeSubmission) => {
           // Clear selected location when clicking on tree
-          // setSelectedLocation(null); // Removed
           if (addTreeInfoWindowRef.current) {
             addTreeInfoWindowRef.current.close();
           }
@@ -206,8 +202,6 @@ const MapContainer = ({ children }: MapContainerProps) => {
             selectedMarkerRef.current.setMap(null);
             selectedMarkerRef.current = null;
           }
-          
-          // setSelectedTree(tree); // Removed
           
           // Create and show InfoWindow for tree details
           if (treeDetailsInfoWindowRef.current) {
@@ -217,9 +211,8 @@ const MapContainer = ({ children }: MapContainerProps) => {
           treeDetailsInfoWindowRef.current = createTreeDetailsInfoWindowWithReact(
             tree,
             (treeId: string) => {
-              // Try using pathname approach
-              const newPath = `/tree/${treeId}`;
-              window.location.pathname = newPath;
+              // Use new navigation system
+              navigateWithHistory(`/tree/${treeId}`);
             }
           );
           
@@ -229,7 +222,7 @@ const MapContainer = ({ children }: MapContainerProps) => {
       
       markersRef.current = newMarkers;
     }
-  }, [map, trees]);
+  }, [map, trees, navigateWithHistory]);
 
   return (
     <div className="relative">

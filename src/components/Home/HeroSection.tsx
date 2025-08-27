@@ -11,12 +11,14 @@ interface HeroSectionProps {
 
 const HeroSection = ({ isAuthenticated, onShowLogin, onShowRegister }: HeroSectionProps) => {
   return (
-    <div 
-      className="relative min-h-screen flex items-center justify-center z-10"
-      style={{
-        background: 'linear-gradient(135deg, rgba(240, 253, 244, 0.3) 0%, rgba(239, 246, 255, 0.3) 50%, rgba(240, 253, 244, 0.3) 100%)'
-      }}
-    >
+         <div 
+       className="relative min-h-screen flex items-center justify-center z-10 transition-colors duration-200"
+       style={{
+         background: 'linear-gradient(135deg, rgba(240, 253, 244, 0.3) 0%, rgba(239, 246, 255, 0.3) 50%, rgba(240, 253, 244, 0.3) 100%)'
+       }}
+     >
+       <div className="dark:hidden absolute inset-0 bg-gradient-to-br from-primary-50/30 to-secondary-50/30"></div>
+       <div className="hidden dark:block absolute inset-0 bg-gradient-to-br from-dark-800/30 to-dark-900/30"></div>
       <div className="relative z-20 text-center px-4 max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -32,11 +34,11 @@ const HeroSection = ({ isAuthenticated, onShowLogin, onShowRegister }: HeroSecti
             />
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-800 mb-6 leading-tight">
-            <span className="text-accent-600">3Drzewa</span>
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-800 dark:text-dark-text mb-6 leading-tight">
+            <span className="text-accent-600 dark:text-accent-400">3Drzewa</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-600 dark:text-dark-text-secondary mb-12 max-w-3xl mx-auto leading-relaxed">
             Społeczność miłośników przyrody dokumentująca najpiękniejsze drzewa Polski. 
             Dołącz do nas i pomóż chronić nasze dziedzictwo przyrodnicze.
           </p>

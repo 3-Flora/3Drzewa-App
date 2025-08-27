@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './hooks/useAuth.tsx';
+import { DarkModeProvider } from './hooks/useDarkMode';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout/Layout';
 import Home from './pages/Home';
@@ -23,8 +24,9 @@ import Reports from './pages/Reports';
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <Routes>
+      <DarkModeProvider>
+        <AuthProvider>
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
             <Route path="map" element={<Map />} />
@@ -43,7 +45,8 @@ function App() {
             <Route path="more" element={<More />} />
           </Route>
         </Routes>
-      </AuthProvider>
+        </AuthProvider>
+      </DarkModeProvider>
     </Router>
   );
 }

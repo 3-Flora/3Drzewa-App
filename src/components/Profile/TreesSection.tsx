@@ -1,9 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { TreePine, Award, CheckCircle, Clock, Calendar, MapPin } from 'lucide-react';
 import { TreeSubmission } from '../../types';
 import LoadingSpinner from '../UI/LoadingSpinner';
+import { useNavigationHistory } from '../../hooks/useNavigationHistory';
 
 interface TreesSectionProps {
   trees: TreeSubmission[];
@@ -11,7 +12,8 @@ interface TreesSectionProps {
 }
 
 const TreesSection: React.FC<TreesSectionProps> = ({ trees, loading }) => {
-  const navigate = useNavigate();
+  const { navigateWithHistory } = useNavigationHistory();
+  
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'monument':
@@ -90,7 +92,7 @@ const TreesSection: React.FC<TreesSectionProps> = ({ trees, loading }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: index * 0.1 }}
           className="bg-gray-50 rounded-2xl p-8 hover:shadow-2xl transition-all duration-300 border-2 border-gray-100 hover:border-emerald-200 cursor-pointer"
-          onClick={() => navigate(`/tree/${tree.id}`)}
+          onClick={() => navigateWithHistory(`/tree/${tree.id}`)}
         >
           <div className="flex items-start justify-between">
             <div className="flex-1">

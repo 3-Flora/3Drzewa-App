@@ -13,7 +13,7 @@ const Home = () => {
   const { isAuthenticated } = useAuth();
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
+    <div className="min-h-screen relative overflow-hidden bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
       <AnimatedBackground />
       
       <HeroSection 

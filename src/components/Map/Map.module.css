@@ -1,0 +1,82 @@
+/* Style dla mapy Google Maps - poprawiają obsługę dotykową */
+
+.mapContainer {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  /* Poprawia obsługę dotykową na urządzeniach mobilnych */
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  /* Zapobiega problemom z zoomem na iOS */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.mapElement {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  /* Dodatkowe style dla lepszej obsługi dotykowej */
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+  /* Zapobiega problemom z przewijaniem */
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+}
+
+/* Style dla InfoWindow - poprawiają obsługę dotykową */
+.infoWindowContent {
+  /* Zapobiega problemom z dotykiem w InfoWindow */
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Style dla markerów - poprawiają responsywność dotykową */
+.marker {
+  /* Zapobiega problemom z dotykiem na markerach */
+  touch-action: manipulation;
+  pointer-events: auto;
+}
+
+/* Globalne style dla Google Maps - poprawiają obsługę dotykową */
+:global(.gm-style) {
+  /* Poprawia obsługę dotykową dla całej mapy Google */
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+
+:global(.gm-style-moc) {
+  /* Poprawia obsługę dotykową dla kontenera mapy */
+  touch-action: pan-x pan-y;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: none;
+}
+
+/* Style dla urządzeń mobilnych */
+@media (max-width: 768px) {
+  .mapContainer {
+    /* Dodatkowe style dla urządzeń mobilnych */
+    touch-action: pan-x pan-y;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: none;
+  }
+  
+  .mapElement {
+    /* Poprawia wydajność na urządzeniach mobilnych */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
+  }
+}

@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { TreeSubmission } from '../types';
 import { fetchCommunityFeed, voteOnTree } from '../utils/api';
 import {
-  CommunityHeader,
   TreeCard,
   EmptyState,
 } from '../components/Community';
@@ -12,6 +11,7 @@ const Community = () => {
   const [trees, setTrees] = useState<TreeSubmission[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [activeTab, setActiveTab] = useState<'for-you' | 'following'>('for-you');
 
   useEffect(() => {
     loadCommunityFeed();
@@ -33,27 +33,31 @@ const Community = () => {
 
   const handleVote = async (treeId: string, vote: 'approve' | 'reject') => {
     try {
-      const newTree = await voteOnTree(treeId, vote);
+      const success = await voteOnTree(treeId, vote);
       
-      setTrees(prev => prev.map(tree => {
-        if (tree.id === treeId) {
-          // If user already voted the same way, remove the vote
-          if (newTree.userVote === vote) {
-            // Remove vote
-            newTree.votes[vote]--;
-            newTree.userVote = undefined;
-          } else {
-            // Add or change vote
-            if (newTree.userVote) {
-              newTree.votes[newTree.userVote]--;
+      if (success) {
+        setTrees(prev => prev.map(tree => {
+          if (tree.id === treeId) {
+            // Create a copy of the tree to avoid mutating the original
+            const updatedTree = { ...tree };
+            
+            // If user already voted the same way, remove the vote
+            if (updatedTree.userVote === vote) {
+              updatedTree.votes[vote]--;
+              updatedTree.userVote = undefined;
+            } else {
+              // Add or change vote
+              if (updatedTree.userVote) {
+                updatedTree.votes[updatedTree.userVote]--;
+              }
+              updatedTree.votes[vote]++;
+              updatedTree.userVote = vote;
             }
-            newTree.votes[vote]++;
-            newTree.userVote = vote;
+            return updatedTree;
           }
-          return newTree;
-        }
-        return tree;
-      }));
+          return tree;
+        }));
+      }
     } catch (error) {
       console.error('Error voting on tree:', error);
       alert('Wystąpił błąd podczas głosowania');
@@ -62,10 +66,10 @@ const Community = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-dark-bg flex items-center justify-center transition-colors duration-200">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Ładowanie...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-dark-text-secondary">Ładowanie...</p>
         </div>
       </div>
     );
@@ -73,12 +77,12 @@ const Community = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-dark-bg flex items-center justify-center transition-colors duration-200">
         <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
+          <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
           <button
             onClick={loadCommunityFeed}
-            className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
+            className="px-4 py-2 bg-blue-500 dark:bg-blue-600 text-white rounded-full hover:bg-blue-600 dark:hover:bg-blue-700 font-semibold transition-colors duration-200"
           >
             Spróbuj ponownie
           </button>
@@ -92,14 +96,17 @@ const Community = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <CommunityHeader />
-      
-      <div className="max-w-4xl mx-auto p-4 pt-8 pb-24 md:pb-8">
+    <div className="min-h-screen bg-white dark:bg-dark-bg transition-colors duration-200">
+
+
+
+
+      {/* Feed Content */}
+      <div className="max-w-4xl mx-auto lg:px-8">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="space-y-6"
+          className="divide-y-2 divide-gray-300 dark:divide-dark-border"
         >
           {trees.map((tree, index) => (
             <motion.div

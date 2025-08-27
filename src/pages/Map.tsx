@@ -1,13 +1,17 @@
 import { useRef, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Loader } from '@googlemaps/js-api-loader';
 import { TreeSubmission } from '../types';
 import { fetchTrees } from '../utils/api';
 import { getTreeMarkerIcon } from '../components/Map/MapUtils';
 import { createAddTreeInfoWindowWithReact } from '../components/Map/AddTreeInfoWindow';
+import { useNavigationHistory } from '../hooks/useNavigationHistory';
+import { useDarkMode } from '../hooks/useDarkMode';
+import { initGoogleMapsErrorHandling } from '../utils/googleMapsErrorHandler';
+import styles from '../components/Map/Map.module.css';
 
 const Map = () => {
-  const navigate = useNavigate();
+  const { navigateWithHistory } = useNavigationHistory();
+  const { isDarkMode } = useDarkMode();
   const mapRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [trees, setTrees] = useState<TreeSubmission[]>([]);
@@ -21,18 +25,21 @@ const Map = () => {
 
   // Navigation function for tree details
   const handleViewTreeDetails = (treeId: string) => {
-    navigate(`/tree/${treeId}`);
+    navigateWithHistory(`/tree/${treeId}`);
   };
 
   // Add global functions for InfoWindow buttons
   useEffect(() => {
     // Global function for tree details navigation
     (window as any).viewTreeDetails = (treeId: string) => {
-      navigate(`/tree/${treeId}`);
+      navigateWithHistory(`/tree/${treeId}`);
     };
-  }, [navigate]);
+  }, [navigateWithHistory]);
 
   useEffect(() => {
+    // Inicjalizuj obsługę błędów Google Maps
+    const cleanupErrorHandling = initGoogleMapsErrorHandling();
+    
     loadTrees();
     const initMap = async () => {
       try {
@@ -41,7 +48,10 @@ const Map = () => {
           version: 'weekly',
           libraries: ['places'],
           region: 'PL',
-          language: 'pl'
+          language: 'pl',
+          // Dodatkowe opcje dla lepszej obsługi dotykowej
+          mapIds: ['DEMO_MAP_ID'], // Używa nowszego silnika mapy
+          authReferrerPolicy: 'origin'
         });
 
         await loader.load();
@@ -56,6 +66,16 @@ const Map = () => {
           center: initialCenter,
           zoom: 7, // Zoom out to show more of Poland
           mapTypeId: google.maps.MapTypeId.ROADMAP,
+          // Dodaj opcje, które rozwiążą problemy z błędami dotykowymi
+          gestureHandling: 'cooperative', // Zapobiega konfliktom touchstart
+          disableDefaultUI: false,
+          zoomControl: true,
+          scrollwheel: true,
+          // Dodatkowe opcje dla lepszej obsługi dotykowej
+          draggable: true,
+          draggableCursor: 'grab',
+          draggingCursor: 'grabbing',
+          // Dodaj style, które mogą pomóc z wydajnością
           styles: [
             {
               featureType: "poi",
@@ -163,6 +183,13 @@ const Map = () => {
     };
 
     initMap();
+    
+    // Cleanup function
+    return () => {
+      if (cleanupErrorHandling) {
+        cleanupErrorHandling();
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -170,6 +197,8 @@ const Map = () => {
       addTreeMarkers();
     }
   }, [map, trees]);
+
+
 
   const loadTrees = async () => {
     try {
@@ -305,18 +334,8 @@ const Map = () => {
 
   if (error) {
     return (
-      <div style={{
-        position: 'absolute',
-        top: '0px',
-        left: 0,
-        right: 0,
-        bottom: '0px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f3f4f6'
-      }}>
-        <div style={{ textAlign: 'center', color: '#ef4444' }}>
+      <div className="absolute inset-0 flex items-center justify-center bg-gray-100 dark:bg-dark-card transition-colors duration-200">
+        <div className="text-center text-red-600 dark:text-red-400">
           <p>{error}</p>
         </div>
       </div>
@@ -324,18 +343,10 @@ const Map = () => {
   }
 
   return (
-    <div className="w-full h-full overflow-hidden" style={{ touchAction: 'pan-x pan-y' }}>
+    <div className={`${styles.mapContainer} bg-gray-50 dark:bg-dark-bg transition-colors duration-200`}>
       <div 
         ref={mapRef} 
-        className="w-full h-full"
-        style={{
-          position: 'absolute',
-          top: '0px',
-          left: '0',
-          right: '0',
-          bottom: '0px',
-          zIndex: 1
-        }}
+        className={styles.mapElement}
       />
     </div>
   );

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useForm, FormProvider } from 'react-hook-form';
 import { motion } from 'framer-motion';
 import { submitTree, generateMunicipalForm } from '../utils/api';
 import { TreeSubmission } from '../types';
+import { useNavigationHistory } from '../hooks/useNavigationHistory';
 import {
   SubmitHeader,
   LocationMap,
@@ -29,7 +30,7 @@ interface FormData {
 }
 
 const Submit = () => {
-  const navigate = useNavigate();
+  const { navigateWithHistory } = useNavigationHistory();
   const [searchParams] = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [images, setImages] = useState<File[]>([]);
@@ -95,7 +96,7 @@ const Submit = () => {
       }
 
       alert('Zgłoszenie zostało pomyślnie dodane!');
-      navigate('/community');
+      navigateWithHistory('/community');
     } catch (error) {
       console.error('Error submitting tree:', error);
       alert('Wystąpił błąd podczas dodawania zgłoszenia.');
@@ -106,13 +107,13 @@ const Submit = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 pt-8 pb-24 md:pb-8">
+    <div className="max-w-2xl mx-auto p-4 pt-8 pb-24 md:pb-8 bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="space-y-6"
       >
-        <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="bg-white dark:bg-dark-card rounded-lg shadow-lg p-6 border border-gray-200 dark:border-dark-border transition-colors duration-200">
           <FormProvider {...methods}>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <SubmitHeader />

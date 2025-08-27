@@ -4,20 +4,21 @@ import { LogIn } from 'lucide-react';
 import Modal from '../UI/Modal';
 import LoadingSpinner from '../UI/LoadingSpinner';
 import { useAuth } from '../../hooks/useAuth';
+import { useNavigationHistory } from '../../hooks/useNavigationHistory';
 
 interface LoginModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const { navigateWithHistory } = useNavigationHistory();
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
 
@@ -37,7 +38,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       await login(email, password);
       // Only navigate on successful login
       onClose();
-      navigate('/map');
+      navigateWithHistory('/map');
     } catch (err) {
       // Show detailed error message to user
       const errorMessage = err instanceof Error ? err.message : 'Wystąpił błąd podczas logowania';

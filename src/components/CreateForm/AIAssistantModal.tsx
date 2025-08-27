@@ -28,22 +28,22 @@ const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
       title="Asystent AI - Pomoc w tworzeniu wniosku"
     >
       <div className="space-y-6">
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border-2 border-blue-100">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-              <Bot className="w-6 h-6 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="font-bold text-gray-800">Asystent AI</h3>
-              <p className="text-sm text-gray-600">Pomogę Ci stworzyć profesjonalne uzasadnienie</p>
-            </div>
-          </div>
+                 <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-dark-700 dark:to-dark-800 p-6 rounded-xl border-2 border-blue-100 dark:border-dark-border transition-colors duration-200">
+           <div className="flex items-center space-x-3 mb-4">
+             <div className="w-12 h-12 bg-blue-100 dark:bg-dark-600 rounded-full flex items-center justify-center">
+               <Bot className="w-6 h-6 text-blue-600 dark:text-blue-400" />
+             </div>
+             <div>
+               <h3 className="font-bold text-gray-800 dark:text-dark-text">Asystent AI</h3>
+               <p className="text-sm text-gray-600 dark:text-dark-text-secondary">Pomogę Ci stworzyć profesjonalne uzasadnienie</p>
+             </div>
+           </div>
           
           {!aiSuggestion ? (
             <div className="text-center">
-              <p className="text-gray-700 mb-4">
-                Kliknij poniżej, aby wygenerować sugestię uzasadnienia na podstawie wybranych danych.
-              </p>
+                             <p className="text-gray-700 dark:text-dark-text-secondary mb-4">
+                 Kliknij poniżej, aby wygenerować sugestię uzasadnienia na podstawie wybranych danych.
+               </p>
               <button
                 onClick={onGenerateSuggestion}
                 disabled={aiLoading}
@@ -69,8 +69,8 @@ const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="bg-white p-4 rounded-xl border border-gray-200 max-h-64 overflow-y-auto">
-                <pre className="whitespace-pre-wrap text-sm text-gray-700 font-sans">
+              <div className="bg-white dark:bg-dark-card p-4 rounded-xl border border-gray-200 dark:border-dark-border max-h-64 overflow-y-auto transition-colors duration-200">
+                <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-dark-text font-sans">
                   {aiSuggestion}
                 </pre>
               </div>
@@ -78,7 +78,7 @@ const AIAssistantModal: React.FC<AIAssistantModalProps> = ({
               <div className="flex justify-end space-x-3">
                 <button
                   onClick={onRegenerate}
-                  className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+                  className="px-4 py-2 text-gray-600 dark:text-dark-text-secondary hover:text-gray-800 dark:hover:text-dark-text transition-colors"
                 >
                   Wygeneruj ponownie
                 </button>

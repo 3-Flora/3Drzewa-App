@@ -646,40 +646,6 @@ export const mockSettingsMenu: SettingsMenu = {
     },
   ],
   settingsItems: [
-    {
-      id: 'notifications',
-      title: 'Powiadomienia',
-      description: 'Zarządzaj powiadomieniami push i email',
-      icon: 'Bell',
-      emoji: '🔔'
-    },
-    {
-      id: 'privacy',
-      title: 'Prywatność i bezpieczeństwo',
-      description: 'Ustawienia prywatności i bezpieczeństwa konta',
-      icon: 'Shield',
-      emoji: '🛡️'
-    },
-    {
-      id: 'language',
-      title: 'Język i region',
-      description: 'Zmień język aplikacji i ustawienia regionalne',
-      icon: 'Globe',
-      emoji: '🌍'
-    },
-    {
-      id: 'help',
-      title: 'Pomoc i FAQ',
-      description: 'Często zadawane pytania i wsparcie techniczne',
-      icon: 'HelpCircle',
-      emoji: '❓'
-    },
-    {
-      id: 'about',
-      title: 'O aplikacji',
-      description: 'Informacje o RejestrDrzew i zespole',
-      icon: 'Info',
-      emoji: 'ℹ️'
-    }
+    // Usunięte wszystkie bezużyteczne opcje
   ]
 };

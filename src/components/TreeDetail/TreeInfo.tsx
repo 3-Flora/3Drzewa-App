@@ -1,15 +1,15 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FileText } from 'lucide-react';
 import { TreeSubmission } from '../../types';
 import TreeStatus from './TreeStatus';
+import { useNavigationHistory } from '../../hooks/useNavigationHistory';
 
 interface TreeInfoProps {
   tree: TreeSubmission;
 }
 
 const TreeInfo: React.FC<TreeInfoProps> = ({ tree }) => {
-  const navigate = useNavigate();
+  const { navigateWithHistory } = useNavigationHistory();
 
   return (
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
@@ -23,7 +23,7 @@ const TreeInfo: React.FC<TreeInfoProps> = ({ tree }) => {
           
           {tree.status === 'approved' && (
             <button
-              onClick={() => navigate('/forms/create')}
+              onClick={() => navigateWithHistory('/forms/create')}
               className="flex items-center space-x-2 btn-green text-white px-6 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1"
             >
               <FileText className="w-5 h-5" />

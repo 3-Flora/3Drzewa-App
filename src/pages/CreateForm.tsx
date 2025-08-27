@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigationHistory } from '../hooks/useNavigationHistory';
 import { TreeSubmission, Municipality, ReportType } from '../types';
 import { fetchUserTrees, fetchMunicipalities, fetchReportTypes } from '../utils/api';
 import {
@@ -17,7 +17,7 @@ import {
 } from '../components/CreateForm';
 
 const CreateForm = () => {
-  const navigate = useNavigate();
+  const { navigateWithHistory } = useNavigationHistory();
   const { user } = useAuth();
   
   const [step, setStep] = useState<'municipality' | 'report' | 'tree' | 'summary'>('municipality');
@@ -163,7 +163,7 @@ W związku z powyższym, wnoszę o uznanie opisanego drzewa za pomnik przyrody z
   };
 
   const handleNavigateToForms = () => {
-    navigate('/forms');
+    navigateWithHistory('/forms');
   };
 
   const canProceed = () => {
@@ -199,17 +199,17 @@ W związku z powyższym, wnoszę o uznanie opisanego drzewa za pomnik przyrody z
 
   if (!user) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">Musisz być zalogowany</h2>
-          <p className="text-gray-600">Zaloguj się, aby utworzyć wniosek do gminy.</p>
+          <h2 className="text-2xl font-bold text-gray-800 dark:text-dark-text mb-4">Musisz być zalogowany</h2>
+          <p className="text-gray-600 dark:text-dark-text-secondary">Zaloguj się, aby utworzyć wniosek do gminy.</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto p-4 pt-8 pb-24 md:pb-8">
+    <div className="max-w-4xl mx-auto p-4 pt-8 pb-24 md:pb-8 bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

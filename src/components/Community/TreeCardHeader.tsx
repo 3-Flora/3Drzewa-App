@@ -1,8 +1,9 @@
 import React from 'react';
-import { User, Calendar, Award, CheckCircle, Clock, XCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { CheckCircle, MoreHorizontal } from 'lucide-react';
 
 interface TreeCardHeaderProps {
-  userId?: string;
+  userId: string;
   submissionDate: string;
   status: string;
   userData?: {
@@ -11,12 +12,7 @@ interface TreeCardHeaderProps {
     userId?: string;
     email?: string;
   };
-  user?: {
-    id: string;
-    name: string;
-    avatar: string;
-    email: string;
-  };
+  user?: any;
 }
 
 const TreeCardHeader: React.FC<TreeCardHeaderProps> = ({
@@ -26,74 +22,92 @@ const TreeCardHeader: React.FC<TreeCardHeaderProps> = ({
   userData,
   user,
 }) => {
-  // Use userData from backend if available, fallback to legacy user
-  const displayUser = userData || user;
-  const displayName = displayUser?.userName || displayUser?.name || `Użytkownik #${userId}`;
-  const displayAvatar = displayUser?.avatar;
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'monument': return <Award className="w-4 h-4 text-yellow-600" />;
-      case 'approved': return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case 'pending': return <Clock className="w-4 h-4 text-yellow-600" />;
-      case 'rejected': return <XCircle className="w-4 h-4 text-red-600" />;
-      default: return <Clock className="w-4 h-4 text-gray-600" />;
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case 'monument': return 'Pomnik przyrody';
-      case 'approved': return 'Zatwierdzony';
-      case 'pending': return 'Oczekuje';
-      case 'rejected': return 'Odrzucony';
-      default: return 'Nieznany';
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) {
+      return 'teraz';
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h`;
+    } else {
+      const diffInDays = Math.floor(diffInHours / 24);
+      return `${diffInDays}d`;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'monument': return 'bg-yellow-100 text-yellow-800';
-      case 'approved': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'rejected': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'approved':
+        return 'text-green-600';
+      case 'pending':
+        return 'text-yellow-600';
+      case 'rejected':
+        return 'text-red-600';
+      default:
+        return 'text-gray-600';
     }
   };
 
+  const getStatusText = (status: string) => {
+    switch (status) {
+      case 'approved':
+        return 'Zatwierdzone';
+      case 'pending':
+        return 'Oczekujące';
+      case 'rejected':
+        return 'Odrzucone';
+      default:
+        return 'Nieznany';
+    }
+  };
+
+  // Get display name from either userData or user
+  const displayName = userData?.userName || user?.name || 'Nieznany użytkownik';
+  const displayEmail = userData?.email || user?.email;
+  
+  // Create a proper handle - use email username or fallback to display name
+  const userHandle = displayEmail ? 
+    displayEmail.split('@')[0] : 
+    displayName.toLowerCase().replace(/\s+/g, '').slice(0, 15);
+
   return (
-    <div className="p-4 border-b border-gray-100">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          {displayAvatar ? (
-            <img 
-              src={displayAvatar} 
-              alt={displayName}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-          ) : (
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-              <User className="w-5 h-5 text-green-600" />
-            </div>
-          )}
-          <div>
-            <p className="font-medium text-gray-800">
-              {displayName}
-            </p>
-            <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Calendar className="w-3 h-3" />
-              <span>{new Date(submissionDate).toLocaleDateString('pl-PL')}</span>
-            </div>
-          </div>
-        </div>
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-2 min-w-0">
+        {/* User Name */}
+        <Link 
+          to={`/tree/${userId}`}
+          className="font-bold text-gray-900 dark:text-dark-text hover:underline truncate"
+        >
+          {displayName}
+        </Link>
         
-        <div className="flex items-center space-x-2">
-          {getStatusIcon(status)}
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(status)}`}>
-            {getStatusLabel(status)}
-          </span>
-        </div>
+        {/* Verification Badge */}
+        {status === 'approved' && (
+          <CheckCircle className="w-4 h-4 text-blue-500 dark:text-blue-400 flex-shrink-0" />
+        )}
+        
+        {/* Status Badge */}
+        <span className={`text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-dark-600 ${getStatusColor(status)} font-medium`}>
+          {getStatusText(status)}
+        </span>
+        
+        {/* Handle */}
+        <span className="text-gray-500 dark:text-dark-text-secondary text-sm truncate">
+          @{userHandle}
+        </span>
+        
+        {/* Timestamp */}
+        <span className="text-gray-500 dark:text-dark-text-secondary text-sm">
+          · {formatDate(submissionDate)}
+        </span>
       </div>
+      
+      {/* More Options */}
+      <button className="text-gray-400 dark:text-dark-text-secondary hover:text-gray-600 dark:hover:text-dark-text p-1 rounded-full hover:bg-gray-100 dark:hover:bg-dark-hover transition-colors">
+        <MoreHorizontal className="w-4 h-4" />
+      </button>
     </div>
   );
 };

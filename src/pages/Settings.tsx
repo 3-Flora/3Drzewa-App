@@ -1,63 +1,72 @@
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+
+import { motion } from 'framer-motion';
 import { 
   FileText, 
   Leaf, 
   CheckCircle, 
   BookOpen,
-  BarChart3,
-  Bell,
-  Shield,
-  HelpCircle,
-  Info,
-  Globe
+  BarChart3
 } from 'lucide-react';
-import { fetchSettingsMenu } from '../utils/api';
-import { SettingsMenu } from '../types';
+
 import {
   SettingsHeader,
-  BackButton,
-  MainMenuSection,
-  SettingsMenuSection,
-  SettingsContent
+  MainMenuSection
 } from '../components/Settings';
 
 const Settings = () => {
-  const [activeSection, setActiveSection] = useState<string | null>(null);
-  const [menuData, setMenuData] = useState<SettingsMenu | null>(null);
-  const [loading, setLoading] = useState(true);
-  
-  // Ref for the settings content container
-  const settingsContentRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    loadSettingsMenu();
-  }, []);
-
-  // Effect to scroll to content when section changes
-  useEffect(() => {
-    if (activeSection && settingsContentRef.current) {
-      // Add a small delay to ensure the content is rendered
-      setTimeout(() => {
-        settingsContentRef.current?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-          inline: 'nearest'
-        });
-      }, 100);
-    }
-  }, [activeSection]);
-
-  const loadSettingsMenu = async () => {
-    try {
-      const menuData = await fetchSettingsMenu();
-      setMenuData(menuData);
-    } catch (error) {
-      console.error('Error loading settings menu:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Statyczne dane menu - bez pobierania z bazy danych
+  const mainMenuItems = [
+    {
+      title: 'Moje wnioski',
+      description: 'Przeglądaj wygenerowane wnioski do gmin',
+      icon: 'FileText',
+      path: '/forms',
+      color: 'text-emerald-600',
+      bgColor: 'bg-emerald-50',
+      emoji: '📄',
+      IconComponent: FileText
+    },
+    {
+      title: 'Gatunki drzew',
+      description: 'Przeglądaj encyklopedię gatunków',
+      icon: 'Leaf',
+      path: '/species',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50',
+      emoji: '🌿',
+      IconComponent: Leaf
+    },
+    {
+      title: 'Weryfikacja społecznościowa',
+      description: 'Pomóż weryfikować zgłoszenia społeczności',
+      icon: 'CheckCircle',
+      path: '/verify',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50',
+      emoji: '✅',
+      IconComponent: CheckCircle
+    },
+    {
+      title: 'Globalne legendy',
+      description: 'Przeglądaj historie i legendy drzew',
+      icon: 'BookOpen',
+      path: '/legends',
+      color: 'text-amber-600',
+      bgColor: 'bg-amber-50',
+      emoji: '📚',
+      IconComponent: BookOpen
+    },
+    {
+      title: 'Raporty i statystyki',
+      description: 'Zobacz statystyki aplikacji i społeczności',
+      icon: 'BarChart3',
+      path: '/reports',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50',
+      emoji: '📊',
+      IconComponent: BarChart3
+    },
+  ];
 
   const getIcon = (iconName: string) => {
     switch (iconName) {
@@ -66,43 +75,16 @@ const Settings = () => {
       case 'CheckCircle': return CheckCircle;
       case 'BookOpen': return BookOpen;
       case 'BarChart3': return BarChart3;
-      case 'Bell': return Bell;
-      case 'Shield': return Shield;
-      case 'Globe': return Globe;
-      case 'HelpCircle': return HelpCircle;
-      case 'Info': return Info;
       default: return FileText;
     }
   };
 
-  const handleSectionClick = (sectionId: string) => {
-    setActiveSection(sectionId);
-  };
 
-  if (loading || !menuData) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Ładowanie ustawień...</p>
-        </div>
-      </div>
-    );
-  }
 
-  // Map icons to components
-  const mainMenuItems = menuData.mainMenuItems.map((item) => ({
-    ...item,
-    IconComponent: getIcon(item.icon)
-  }));
 
-  const settingsItems = menuData.settingsItems.map((item) => ({
-    ...item,
-    IconComponent: getIcon(item.icon)
-  }));
 
   return (
-    <div className="max-w-4xl mx-auto p-4 pt-8 pb-24 md:pb-8">
+    <div className="max-w-6xl mx-auto p-4 pt-8 pb-24 md:pb-8 lg:px-8 lg:py-8 bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -113,30 +95,11 @@ const Settings = () => {
           description="Wszystkie funkcje i opcje aplikacji RejestrDrzew"
         />
         
-        {activeSection && (
-          <BackButton
-            onClick={() => setActiveSection(null)}
-            label="Powrót do menu"
-          />
-        )}
-        
         <MainMenuSection items={mainMenuItems} />
         
-        <SettingsMenuSection 
-          items={settingsItems}
-          onItemClick={handleSectionClick}
-        />
+
         
-        <AnimatePresence mode="wait">
-          {activeSection && (
-            <div ref={settingsContentRef}>
-              <SettingsContent
-                activeSection={activeSection}
-                settingsItems={settingsItems}
-              />
-            </div>
-          )}
-        </AnimatePresence>
+
       </motion.div>
     </div>
   );

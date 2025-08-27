@@ -20,14 +20,14 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
   onGenerate,
 }) => {
   return (
-    <div className="flex justify-between mt-8 pt-6 border-t-2 border-gray-100">
+    <div className="flex justify-between mt-8 pt-6 border-t-2 border-gray-100 dark:border-dark-border">
       <button
         onClick={onBack}
         disabled={step === 'municipality'}
         className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-all duration-300 font-bold ${
           step === 'municipality'
-            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            ? 'bg-gray-100 dark:bg-dark-600 text-gray-400 dark:text-dark-text-secondary cursor-not-allowed'
+            : 'bg-gray-200 dark:bg-dark-600 text-gray-700 dark:text-dark-text hover:bg-gray-300 dark:hover:bg-dark-hover'
         }`}
       >
         <ArrowLeft className="w-4 h-4" />
@@ -41,7 +41,7 @@ const NavigationButtons: React.FC<NavigationButtonsProps> = ({
           className={`flex items-center space-x-2 px-6 py-3 rounded-xl transition-all duration-300 font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-1 ${
             canProceed
               ? 'text-white'
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-gray-100 dark:bg-dark-600 text-gray-400 dark:text-dark-text-secondary cursor-not-allowed'
           }`}
           style={canProceed ? { 
             background: 'linear-gradient(135deg, rgba(5, 150, 105, 0.9) 0%, rgba(5, 150, 105, 0.7) 100%)',

@@ -42,17 +42,17 @@ const Legends = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex items-center justify-center min-h-screen bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
         <div className="text-center">
           <LoadingSpinner size="lg" />
-          <p className="mt-4 text-gray-600">Ładowanie legend...</p>
+          <p className="mt-4 text-gray-600 dark:text-dark-text-secondary">Ładowanie legend...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 pt-8 pb-24 md:pb-8">
+    <div className="max-w-6xl mx-auto p-4 pt-8 pb-24 md:pb-8 lg:px-8 lg:py-8 bg-gray-50 dark:bg-dark-bg transition-colors duration-200">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

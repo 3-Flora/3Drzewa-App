@@ -37,7 +37,7 @@ const StatsSection = () => {
   };
 
   return (
-    <div className="py-16 bg-white">
+    <div className="py-16 bg-white dark:bg-dark-card transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, index) => {
@@ -53,10 +53,10 @@ const StatsSection = () => {
                 <div className={`${stat.color} mb-2 flex justify-center`}>
                   <IconComponent className="w-8 h-8" />
                 </div>
-                <div className="text-3xl font-bold text-gray-800 mb-1">
+                <div className="text-3xl font-bold text-gray-800 dark:text-dark-text mb-1">
                   {stat.value}
                 </div>
-                <div className="text-sm text-gray-600">
+                <div className="text-sm text-gray-600 dark:text-dark-text-secondary">
                   {stat.label}
                 </div>
               </motion.div>

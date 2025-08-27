@@ -1,5 +1,5 @@
-import React from 'react';
-import { ThumbsUp, ThumbsDown } from 'lucide-react';
+import React, { useState } from 'react';
+import { MessageCircle, Repeat, Heart, Eye, Bookmark, Share2 } from 'lucide-react';
 
 interface TreeCardActionsProps {
   treeId: string;
@@ -9,6 +9,8 @@ interface TreeCardActionsProps {
     reject: number;
   };
   onVote: (treeId: string, vote: 'approve' | 'reject') => void;
+  onCommentClick?: (treeId: string) => void;
+  onImageClick?: (imageUrl: string) => void;
 }
 
 const TreeCardActions: React.FC<TreeCardActionsProps> = ({
@@ -16,35 +18,109 @@ const TreeCardActions: React.FC<TreeCardActionsProps> = ({
   userVote,
   votes,
   onVote,
+  onCommentClick,
+  onImageClick,
 }) => {
+  const [likeCount, setLikeCount] = useState(votes.approve);
+  const [isLiked, setIsLiked] = useState(userVote === 'approve');
+  const [commentCount, setCommentCount] = useState(0);
+  const [retweetCount, setRetweetCount] = useState(0);
+  const [viewCount, setViewCount] = useState(votes.approve + votes.reject);
+
+  const handleLike = () => {
+    if (isLiked) {
+      setLikeCount(prev => prev - 1);
+      setIsLiked(false);
+      onVote(treeId, 'approve'); // Remove vote
+    } else {
+      setLikeCount(prev => prev + 1);
+      setIsLiked(true);
+      onVote(treeId, 'approve'); // Add vote
+    }
+  };
+
+  const handleComment = () => {
+    setCommentCount(prev => prev + 1);
+    if (onCommentClick) {
+      onCommentClick(treeId);
+    }
+  };
+
+  const handleRetweet = () => {
+    setRetweetCount(prev => prev + 1);
+  };
+
+  const handleView = () => {
+    setViewCount(prev => prev + 1);
+  };
+
   return (
-    <div className="flex items-center justify-between p-4 border-t border-gray-100">
-      {/* Approve/Disapprove buttons */}
-      <div className="flex items-center space-x-4">
-        <button
-          onClick={() => onVote(treeId, 'approve')}
-          className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-            userVote === 'approve'
-              ? 'bg-green-100 text-green-700 border border-green-300'
-              : 'bg-gray-50 text-gray-600 hover:bg-green-50 hover:text-green-600 hover:border-green-200 border border-gray-200'
-          }`}
-        >
-          <ThumbsUp className="w-4 h-4" />
-          <span>{votes.approve}</span>
-        </button>
-        
-        <button
-          onClick={() => onVote(treeId, 'reject')}
-          className={`flex items-center space-x-2 px-3 py-2 rounded-lg transition-all duration-200 ${
-            userVote === 'reject'
-              ? 'bg-red-100 text-red-700 border border-red-300'
-              : 'bg-gray-50 text-gray-600 hover:bg-red-50 hover:text-red-600 hover:border-red-200 border border-gray-200'
-          }`}
-        >
-          <ThumbsDown className="w-4 h-4" />
-          <span>{votes.reject}</span>
-        </button>
-      </div>
+    <div className="flex items-center justify-between max-w-md">
+      {/* Comment */}
+      <button 
+        onClick={handleComment}
+        className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors group"
+      >
+        <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+          <MessageCircle className="w-5 h-5" />
+        </div>
+        <span className="text-sm">{commentCount}</span>
+      </button>
+
+      {/* Retweet/Share */}
+      <button 
+        onClick={handleRetweet}
+        className="flex items-center space-x-2 text-gray-500 hover:text-green-500 transition-colors group"
+      >
+        <div className="p-2 rounded-full group-hover:bg-green-50 transition-colors">
+          <Repeat className="w-5 h-5" />
+        </div>
+        <span className="text-sm">{retweetCount}</span>
+      </button>
+
+      {/* Like/Vote */}
+      <button 
+        onClick={handleLike}
+        className={`flex items-center space-x-2 transition-colors group ${
+          isLiked 
+            ? 'text-red-500' 
+            : 'text-gray-500 hover:text-red-500'
+        }`}
+      >
+        <div className={`p-2 rounded-full transition-colors ${
+          isLiked 
+            ? 'bg-red-50' 
+            : 'group-hover:bg-red-50'
+        }`}>
+          <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+        </div>
+        <span className="text-sm">{likeCount}</span>
+      </button>
+
+      {/* Views */}
+      <button 
+        onClick={handleView}
+        className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors group"
+      >
+        <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+          <Eye className="w-5 h-5" />
+        </div>
+        <span className="text-sm">{viewCount}</span>
+      </button>
+
+      {/* Bookmark */}
+      <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors group">
+        <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+          <Bookmark className="w-5 h-5" />
+        </div>
+      </button>
+
+      {/* Share */}
+      <button className="flex items-center space-x-2 text-gray-500 hover:text-blue-500 transition-colors group">
+        <div className="p-2 rounded-full group-hover:bg-blue-50 transition-colors">
+          <Share2 className="w-5 h-5" />
+        </div>
+      </button>
     </div>
   );
 };
