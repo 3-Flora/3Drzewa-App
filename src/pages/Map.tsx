@@ -6,8 +6,6 @@ import { getTreeMarkerIcon } from '../components/Map/MapUtils';
 import { createAddTreeInfoWindowWithReact } from '../components/Map/AddTreeInfoWindow';
 import { useNavigationHistory } from '../hooks/useNavigationHistory';
 import { useDarkMode } from '../hooks/useDarkMode';
-import { initGoogleMapsErrorHandling } from '../utils/googleMapsErrorHandler';
-import styles from '../components/Map/Map.module.css';
 
 const Map = () => {
   const { navigateWithHistory } = useNavigationHistory();
@@ -37,9 +35,6 @@ const Map = () => {
   }, [navigateWithHistory]);
 
   useEffect(() => {
-    // Inicjalizuj obsługę błędów Google Maps
-    const cleanupErrorHandling = initGoogleMapsErrorHandling();
-    
     loadTrees();
     const initMap = async () => {
       try {
@@ -48,10 +43,7 @@ const Map = () => {
           version: 'weekly',
           libraries: ['places'],
           region: 'PL',
-          language: 'pl',
-          // Dodatkowe opcje dla lepszej obsługi dotykowej
-          mapIds: ['DEMO_MAP_ID'], // Używa nowszego silnika mapy
-          authReferrerPolicy: 'origin'
+          language: 'pl'
         });
 
         await loader.load();
@@ -65,24 +57,7 @@ const Map = () => {
         const mapInstance = new Map(mapRef.current, {
           center: initialCenter,
           zoom: 7, // Zoom out to show more of Poland
-          mapTypeId: google.maps.MapTypeId.ROADMAP,
-          // Dodaj opcje, które rozwiążą problemy z błędami dotykowymi
-          gestureHandling: 'cooperative', // Zapobiega konfliktom touchstart
-          disableDefaultUI: false,
-          zoomControl: true,
-          scrollwheel: true,
-          // Dodatkowe opcje dla lepszej obsługi dotykowej
-          draggable: true,
-          draggableCursor: 'grab',
-          draggingCursor: 'grabbing',
-          // Dodaj style, które mogą pomóc z wydajnością
-          styles: [
-            {
-              featureType: "poi",
-              elementType: "labels",
-              stylers: [{ visibility: "off" }]
-            }
-          ]
+          mapTypeId: google.maps.MapTypeId.ROADMAP
         });
         
         setMap(mapInstance);
@@ -183,13 +158,6 @@ const Map = () => {
     };
 
     initMap();
-    
-    // Cleanup function
-    return () => {
-      if (cleanupErrorHandling) {
-        cleanupErrorHandling();
-      }
-    };
   }, []);
 
   useEffect(() => {
@@ -343,10 +311,18 @@ const Map = () => {
   }
 
   return (
-    <div className={`${styles.mapContainer} bg-gray-50 dark:bg-dark-bg transition-colors duration-200`}>
+    <div className="w-full h-full overflow-hidden bg-gray-50 dark:bg-dark-bg transition-colors duration-200" style={{ touchAction: 'pan-x pan-y' }}>
       <div 
         ref={mapRef} 
-        className={styles.mapElement}
+        className="w-full h-full"
+        style={{
+          position: 'absolute',
+          top: '0px',
+          left: '0',
+          right: '0',
+          bottom: '0px',
+          zIndex: 1
+        }}
       />
     </div>
   );
